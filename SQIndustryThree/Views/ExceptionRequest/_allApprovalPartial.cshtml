@@ -1,0 +1,71 @@
+﻿@model IEnumerable<SQIndustryThree.Models.ExceptionRequestHRMaster>
+@{
+    ViewBag.Title = "_pendingPertialView";
+}
+<style>
+    th {
+        text-align: center;
+    }
+
+    td {
+        text-align: center;
+    }
+</style>
+<font size="2" face="Calibri">
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="col-xs-12" id="personlocdiv">
+                <table id="approvalPartailTable" class="table-bordered table table-responsive">
+                    <thead>
+                        <tr>
+                            <th>SL</th>
+                            <th>Request #</th>
+                            <th>Location</th>
+                            <th>Business Unit</th>
+                            <th>Exception Type</th>
+                            <th>Reason</th>
+                            <th>Month</th>
+                            <th>Request By</th>
+                            <th>Create Date</th>
+                            <th>Action(Comments)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int count = 1;}
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.ExpReqMastertId</td>
+                            <td>@item.LocationName</td>
+                            <td>@item.BusinessUnitName</td>
+                            <td>@item.ExceptionTypeName</td>
+                            <td>@item.ExceptionReasonName</td>
+                            <td>@item.Month</td>
+                            <td>@item.RequestBy</td>
+                            <td>@DateTime.Parse(@item.CreateDate).ToString("dd MMM yyyy")</td>
+                            @if (item.IsApproved == 3)
+                            {
+                                <td> <button type="button" class="btn  btn-block btn-primary btn-sm" data-toggle="modal" data-target="#myModal" onclick="ExceptionDetails(@item.ExpReqMastertId,1)" data-idkey="@item.ExpReqMastertId">Pending(@item.Pending)</button></td>
+                            }
+                            else if (item.IsApproved == 1)
+                            {
+                                <td> <button type="button" class="btn  btn-block btn-success btn-sm" data-toggle="modal" data-target="#showmodal" onclick="ExceptionDetails(@item.ExpReqMastertId,2)" data-idkey="@item.ExpReqMastertId">Approved(@item.Pending)</button></td>
+                            }
+                            else if (item.IsApproved == 2)
+                            {
+                                <td> <button type="button" class="btn  btn-block btn-danger btn-sm" data-toggle="modal" data-target="#showmodal" onclick="ExceptionDetails(@item.ExpReqMastertId,2)" data-idkey="@item.ExpReqMastertId">Rejected(@item.Pending)</button></td>
+                            }
+                        </tr>
+                            count++;
+
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+</font>

@@ -1,0 +1,549 @@
+﻿@model IEnumerable<SQInventory.Models.FGWH.ModelCartonCreate>
+@*@model IEnumerable<SQInventory.EntityManager.FGWHDB.CartonCreate>*@
+@{
+    ViewBag.Title = "CartonEntry";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*@{
+        int Sr = 0;
+    }*@
+@Styles.Render("~/Content/capexform.css")
+@*https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css
+    https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css*@
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+<link href="~/Content/LoadingModal.css" rel="stylesheet" />
+
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<link href="~/Scripts/DataTables-1.11.3/css/dataTables.dataTables.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/DataTables-1.11.3/js/dataTables.dataTables.min.js"></script>
+<script src="~/ScriptManager/CartonEntry.js"></script>
+@*<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/ScriptManager/CartonEntry.js"></script>*@
+<style type="text/css">
+    .form-control, .btn {
+        border-radius: 0px;
+    }
+</style>
+
+<body>
+    <div class="container-fluid" style="background-color:aliceblue">
+        <h2 style="text-align:center;background-color:antiquewhite"><b>CARTON ENTRY</b></h2>
+        <div class="col-md-12">
+            <div class="row ">
+                <div class="col-md-4">
+                    <div class="col-md-4">
+                        <label for="BusinessUnitID">Business Unit</label>
+                    </div>
+                    <div class="col-md-7">
+                        <select id="BusinessUnitID" name="BusinessUnitID" class="form-control">
+                            <option value="0" selected disabled>Select Business Unit</option>
+                            @foreach (var BUnit in ViewBag.BusinessUnit)
+                            {
+                                <option value="@BUnit.BusinessUnitId">@BUnit.BusinessUnitName</option>
+                            }
+
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="col-md-1">
+                        <label for="CreateDate">Date</label>
+                    </div>
+                    <div class="col-md-7">
+                        <input id="CreateDate" class="form-control" type="date" />
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="col-md-6">
+                        <label for="CartonMeasurement">Carton Measurement</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input id="CartonMeasurement" name="CartonMeasurement" class="form-control" />
+                    </div>
+                </div>
+
+            </div>
+            <br />
+
+            <div class="col-md-6">
+                <div class="col-md-8">
+                    <div class="col-md-2">
+                        <label for="BuyerID">Buyer</label>
+                    </div>
+                    <div class="col-md-10">
+                        <select id="BuyerID" name="BuyerID" class="form-control">
+                            <option value="0" selected disabled>Select Buyer </option>
+                            @foreach (var Buyer in ViewBag.Buyer)
+                            {
+
+                                <option value="@Buyer.BuyerId">@Buyer.BuyerName</option>
+                            }
+
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-md-2">
+                        <label for="PO">PO</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="PO" name="PO" class="form-control" />
+                    </div>
+
+                </div>
+                <div class="col-md-8">
+                    <div class="col-md-2">
+                        <label for="Style">Style</label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="Style" name="Style" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-md-2">
+                        <label for="Style"></label>
+                    </div>
+                    <div class="col-md-10">
+                        @*<input id="Style" name="Style" class="form-control" />*@
+                    </div>
+                </div>
+
+
+                <div class="col-md-8">
+                    <div class="col-md-4">
+                        <label for="ORDER_QTY"> ORDER QTY </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input id="ORDER_QTY" name="ORDER_QTY" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-md-4">
+                        <label for="TOTAL_CTN">TOTAL CTN</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input id="TOTAL_CTN" name="TOTAL_CTN" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-md-4">
+                        <label for="DESTIN"> DESTINATION </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input id="DESTIN" name="DESTIN" class="form-control" />
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="col-md-8">
+                    <div class="col-md-7">
+                        <label for="Solid_Colour"> Solid Colour  </label>
+                    </div>
+                    <div class="col-md-5">
+                        <input id="Solid_Colour" name="Solid_Colour" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-md-7">
+                        <label for="Solid_Size"> Solid Size </label>
+                    </div>
+                    <div class="col-md-5">
+                        <input id="Solid_Size" name="Solid_Size" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-md-5">
+                        <label for="WinShip_Quty">Ship Quty </label>
+                    </div>
+                    <div class="col-md-7">
+                        <input id="WinShip_Quty" name="WinShip_Quty" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-md-2">
+                        <label for="PLUSE"> PLUSE </label>
+                    </div>
+                    <div class="col-md-10">
+                        <input id="PLUSE" name="PLUSE" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-md-4">
+                        <label for="PERCENTAGE"> PERCENTAGE </label>
+                    </div>
+                    <div class="col-md-8">
+                        <input id="PERCENTAGE" name="PERCENTAGE" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <hr />
+
+    <div>
+        <button class="btn btn-info" style="float:right" ; id="addrow">Add Row</button>
+        <table id="TblCartonList" class="table order-list">
+            <thead>
+                <tr>
+                    <td>CARTON NO</td>
+                    <td>COLOR</td>
+                    <td>XS</td>
+                    <td>S</td>
+                    <td>M</td>
+                    <td>L</td>
+                    <td>XL</td>
+                    <td>XXL</td>
+                    <td>XXX</td>
+                    <td>QUANTITY</td>
+                    <td>NET WEIGHT</td>
+                    <td>GROSS WEIGHT</td>
+                    <td>Action</td>
+
+                </tr>
+            </thead>
+            <tbody id="tblBodyinput">
+                <tr>
+                    @*<td class="col-sm-2">
+                            <input type="text" id="asset_catagory" name="asset_catagory" class="form-control" />
+                        </td>
+                        <td class="col-sm-4">
+                            <input type="text" id="asset_description" name="asset_description" class="form-control" />
+                        </td>
+                        <td class="col-sm-1">
+                            <input type="text" id="asse_qty" onchange="calculateGrandTotal()" name="asse_qty" class="form-control" />
+                        </td>
+                        <td class="col-sm-2">
+                            <input type="text" id="asset_unitPrice" onchange="calculateGrandTotal()" name="asset_unitPrice" class="form-control" />
+                        </td>
+                        <td class="col-sm-2">
+                            <input type="text" id="asset_estimated_cost" name="asset_estimated_cost" disabled class="form-control" />
+                        </td>
+                        <td class="col-sm-1">
+                            <a class="deleteRow"></a>
+                        </td>*@
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                <tr>
+                    <td><b>Total</b></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+
+                    <td id="grandtotal" name="grandtotal"><b>0.0</b></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="modal-footer">
+            <button type="button" id="remove_button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-info" id="save_button">Submit</button>
+        </div>
+    </div>
+    <div class="  col-md-11">
+        <table id="showCarton" class="table hover cell-border" style="border:solid;padding:5px; margin-left:55px;">
+            <thead>
+                <tr>
+                    <td>
+                        Carton ID
+                    </td>
+                    <td>
+                        Buyer Name
+                    </td>
+                    <td>
+                        Business Unit
+                    </td>
+                    <td>
+                        PO
+                    </td>
+                    <td>
+                        Style
+                    </td>
+                    <td>
+                        Destination
+                    </td>
+                    <td>
+                        Total Qnty.
+                    </td>
+                    <td></td>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td >@item.CartonID</td>
+                    <td>@item.BuyerName</td>
+                    <td>@item.BusinessUnitName</td>
+                    <td>@item.PO</td>
+                    <td>@item.Style</td>
+                    <td>@item.DESTIN</td>
+                    <td>@item.ORDER_QTY</td>
+                    <td>
+                        <button type="button" id="btn_carton_Details" onclick="Carton.details(@item.CartonID)" class="btn btn-info"><img src="~/Images/duplex-boxes.jpg" style="width:50px;height:25px;" title="Carton Details" />Details</button>
+                    </td>
+                </tr>
+
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal" id="myPreview">
+        <div class="modal-dialog modal-lg">
+            <div class="col-md-12 modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" style="text-align: center">Carton Details Preview</h4>
+                </div>
+                <div id="previewmodalbody" class="previewmodal-body">
+                    <div style='border: 1px solid black; padding:20px;'>
+                        <table id="masterdetails" style='width:100%;' class='table table-striped'>
+                            <thead style='font-weight: bold;text-align:center;'>
+                                <tr>
+                                    <th>Carton No</th>
+                                    <th>Color</th>
+                                    <th>SizeXS</th>
+                                    <th>SizeS</th>
+                                    <th>SizeM</th>
+                                    <th>SizeL</th>
+                                    <th>SizeXL</th>
+                                    <th>SizeXX</th>
+                                    <th>SizeXXX</th>
+                                    <th>Quentity</th>
+                                    <th>NET WEIGHT</th>
+                                    <th>GROSS WEIGHT</th>
+                                </tr>
+                            </thead>
+                            <tbody  style="text-align: center;"id="main">
+                                <tr>
+                                    <td>C001</td>
+                                    <td>Red</td>
+                                    <td>10</td>
+                                    <td>20</td>
+                                    <td> 30</td>
+                                    <td>50</td>
+                                    <td>30</td>
+                                    <td>40</td>
+                                    <td>40</td>
+                                    <td>100</td>
+                                    <td>70</td>
+                                    <td>80</td>
+                                    
+                                </tr>
+                                
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        @*<button type="button" class="btn btn-primary btn-sm" onclick="PrintModal()">Print</button>*@
+                        <button type="button" id="remove_button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+</body>
+
+
+
+@Scripts.Render("~/bundles/jquery")
+
+<!--<script type="text/javascript">-->
+
+    @*window.onload = function () {
+        GetDate();
+        $('#showCarton').DataTable();
+
+
+    };
+
+    $("#save_button").click(function () {
+        SaveCarton();
+
+    });
+    $("#btn_carton_Details").click(function () {
+        ModelShow();
+    });
+
+    $("#remove_button").click(function () {
+        window.location.href = '@Url.Action("Index", "Home")';
+     });
+
+    function GetDate() {
+        var dt = new Date();
+        var dd;
+        var mm;
+        dd = dt.getDate();
+        mm = dt.getMonth() + 1;
+        //document.getElementById('current_date').value = mm + '/' + dd + '/' + dt.getFullYear();
+
+    }
+    $(document).ready(function () {
+        var counter = 0;
+
+        
+
+        $("#addrow").on("click", function () {
+
+            counter = $('#myTable tr').length - 2;
+            //var assetCata = $("#assetSelect").children("option:selected").html();
+            var newRow = $("<tr>");
+            var cols = "";
+
+            cols += '<td><input type="text"  class="form-control"  name="Carton' + counter + '"  /></td>';
+            cols += '<td><input type="text" class="form-control"  name="Color' + counter + '"/></td>';
+            cols += '<td><input type="text" class="form-control"   name="SizeXS' + counter + '"/></td>';
+            cols += '<td><input type="text" class="form-control"  name="SizeS' + counter + '"/></td>';
+            cols += '<td><input type="text" class="form-control"  name="SizeM' + counter + '"/></td>';
+            cols += '<td><input type="text" class="form-control"  name="SizeL' + counter + '"/></td>';
+            cols += '<td><input type="text" class="form-control"  name="SizeXL' + counter + '"/></td>';
+            cols += '<td><input type="text" class="form-control"  name="SizeXX' + counter + '"/></td>';
+            cols += '<td><input type="text" class="form-control"  name="SizeXXX' + counter + '"/></td>';
+            cols += '<td><input type="text" class="form-control"  name="Quentity' + counter + '"/></td>';
+            cols += '<td><input type="text" class="form-control"  name="NET_WEIGHT' + counter + '"/></td>';
+            cols += '<td><input type="text" class="form-control"  name="GROSS_WEIGHT' + counter + '"/></td>';
+            cols += '<td><input type="button" class="btn btn-danger ibtnDel"  value="X"></td>';
+
+            newRow.append(cols);
+            if (counter == 4) $('#addrow').attr('disabled', true).prop('value', "You've reached the limit");
+            $("#tblBodyinput").append(newRow);
+            counter++;
+            //calculateGrandTotal();
+        });
+
+        //$("table.order-list").on("change", 'input[name^="Quentity"]', function (event) {
+        //    /*calculateRow($(this).closest("tr"));*/
+        //    /*calculateGrandTotal();*/
+        //});
+
+
+        $("table.order-list").on("click", ".ibtnDel", function (event) {
+            $(this).closest("tr").remove();
+           /* calculateGrandTotal();*/
+
+           /* counter -= 1*/
+            $('#addrow').attr('disabled', false).prop('value', "Add Row");
+        });
+    });
+
+    function ModelShow() {
+        $('#CartonDetailsShow').show();
+    }
+    function SaveCarton() {
+        var valid = false;
+        var jsonData = {};
+            jsonData["BuyerID"] = $('#BuyerID').val();
+            jsonData["BusinessUnitID"] = $('#BusinessUnitID').val();
+            jsonData["PO"] = $('#PO').val();
+            jsonData["Style"] = $('#Style').val();
+            jsonData["ORDER_QTY"] = $('#ORDER_QTY').val();
+            jsonData["WinShip_Quty"] = $('#WinShip_Quty').val();
+            jsonData["PLUSE"] = $('#PLUSE').val();
+            jsonData["PERCENTAGE"] = $('#PERCENTAGE').children("option:selected").html();
+            jsonData["TOTAL_CTN"] = $('#TOTAL_CTN').val();
+            jsonData["DESTIN"] = $('#DESTIN').val();
+            jsonData["Solid_Colour"] = $('#Solid_Colour').val();
+            jsonData["Solid_Size"] = $('#Solid_Size').val();
+        jsonData["CartonMeasurement"] = $('#CartonMeasurement').val();
+            jsonData["PERCENTAGE"] = $('#PERCENTAGE').val();
+        var CartonDetailsList = [];
+        $('#TblCartonList tr').each(function () {
+
+            var myData = {};
+                myData["CartonNo"] = $(this).find('input[name^="Carton"]').val();
+                myData["Color"] = $(this).find('input[name^="Color"]').val();
+                myData["SizeXS"] = $(this).find('input[name^="SizeXS"]').val();
+                myData["SizeS"] = $(this).find('input[name^="SizeS"]').val();
+                myData["SizeM"] = $(this).find('input[name^="SizeM"]').val();
+                myData["SizeL"] = $(this).find('input[name^="SizeL"]').val();
+                myData["SizeXL"] = $(this).find('input[name^="SizeXL"]').val();
+                myData["SizeXX"] = $(this).find('input[name^="SizeS"]').val();
+                myData["SizeXXX"] = $(this).find('input[name^="SizeXXX"]').val();
+                myData["Quentity"] = $(this).find('input[name^="Quentity"]').val();
+                myData["NET_WEIGHT"] = $(this).find('input[name^="NET_WEIGHT"]').val();
+                myData["GROSS_WEIGHT"] = $(this).find('input[name^="GROSS_WEIGHT"]').val();
+                if (Number.isNaN(myData["Quentity"]) == false && parseFloat(myData["Quentity"]) > 0) {
+                    CartonDetailsList.push(myData);
+                }
+
+        });
+        if (CartonDetailsList.length > 0) {
+            valid = true;
+        }
+
+        jsonData["cartonDetails"] = CartonDetailsList;
+
+        if (valid == true) {
+            var urlpath = '@Url.Action("SaveCarton", "CartonEntry")';
+            $.ajax({
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(jsonData),
+                dataType: 'json',
+                url: urlpath,
+                type: "Post",
+                async: true,
+                success: function (result) {
+                    if (result.isSuccess) {
+                        swal({
+                                        title: 'Carton Saved Successfully!!',
+                                        type: 'success',
+                                        closeOnCancel: true
+                        },
+                         function () {
+                                 window.location.href = '@Url.Action("CartonEntry", "CartonEntry")';
+                         });
+                    }
+                }
+            });
+        } else {
+            swal({
+                title: 'PLEASE ENTER ALL THE FIELD!!',
+                type: 'error',
+                closeOnCancel: true
+            });
+        }
+
+    }*@
+
+
+<!--</script>-->
+
+
+
+
+
+
+
+
+
+
+

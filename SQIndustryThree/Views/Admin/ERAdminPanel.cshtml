@@ -1,0 +1,494 @@
+﻿
+@{
+    ViewBag.Title = "ER Admin Panel";
+}
+
+<link href="~/Assets/bower_components/select2/dist/css/select2.min.css" rel="stylesheet" />
+<style type="text/css">
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <label class="col-sm-2">Select User <span style="color: red">*</span></label>
+        <div class="col-sm-4">
+            <select id="user" onchange="userIdSelectFunction()" class="form-control select2">
+            </select>
+        </div>
+        <div class="col-sm-6">
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <h4 style="text-align: center;  padding: 5px ;background-color: #9bb07e; color: white;">User wise business unit</h4>
+            <table style="margin-left: auto; margin-right: auto; max-width: 400px;" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Busniess Unit</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="businessUnitTableBody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>-</td>
+                        <td>
+                            <select id="businessUnitDD" class="form-control">
+                            </select>
+                        </td>
+                        <td><button onclick="addBusinessUnit()"><i style="color: black" class="fa fa-plus-circle"></i></button></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <br />
+            @*------------------------------- Approver Change ----------------------------------*@
+            <h4 style="text-align: center;  padding: 5px ;background-color: #9bb07e; color: white;">User wise approver</h4>
+            <table style="margin-left: auto; margin-right: auto; max-width: 600px;" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                        <th>Approver No.</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="approverTableBody">
+                    @*<tr>
+                    <td>1</td>
+                    <td>Birichina 1</td>
+                    <td><button href="#"><i style="color: black" class="fa fa-trash"></i></button></td>
+                </tr>*@
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>-</td>
+                        <td colspan="3">
+                            <select id="approverDD" class="form-control">
+                            </select>
+                        </td>
+                        <td><button onclick="addApprover()"><i style="color: black" class="fa fa-plus-circle"></i></button></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h4 style="text-align: center;  padding: 5px ;background-color: #9bb07e; color: white;">User wise buyer</h4>
+            <table style="margin-left: auto; margin-right: auto; max-width: 400px;" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Buyer Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="buyerTableBody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>-</td>
+                        <td>
+                            <select id="buyerDD" class="form-control">
+                            </select>
+                        </td>
+                        <td><button onclick="addBuyer()"><i style="color: black" class="fa fa-plus-circle"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td>-</td>
+                        <td style="text-align: center;">
+                            <button onclick="addAllBuyer()"><i style="color: black" class="fa fa-plus-circle"></i> All Buyers</button>
+                            <button onClick="removeAllBuyer()"><i style="color: black" class="fa fa-trash"></i> All Buyers</button>
+                        </td>
+                        <td>-</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script src="~/Assets/bower_components/select2/dist/js/select2.min.js"></script>
+<script type="text/javascript">
+    $('.select2').select2();
+
+    window.onload = function () {
+        loadUsers();
+        loadBusinessUnits();
+        loadApprovers();
+        loadBuyers();
+    };
+
+    function loadUsers() {
+        var urlPath = '@Url.Action("GetAllUsers", "Admin")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                $('#user').empty();
+                $('#user').append(
+                    '<option value="0">--Select A User --</option>'
+                );
+                datas.forEach(function (data) {
+                    $('#user').append(
+                        '<option value="' + data.UserId + '">' + data.UserName + '</option>'
+                    );
+                });
+            }
+        });
+    }
+
+    function loadBusinessUnits() {
+        var urlPath = '@Url.Action("CourierBusinessUnits", "Admin")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                $('#businessUnitDD').empty();
+                datas.forEach(function (data) {
+                    $('#businessUnitDD').append(
+                        '<option value="' + data.BusinessUnitId + '">' + data.BusinessUnitName + '</option>'
+                    );
+                });
+            }
+        });
+    }
+
+    function loadApprovers() {
+        var urlPath = '@Url.Action("CourierApprovers", "Admin")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                $('#approverDD').empty();
+                datas.forEach(function (data) {
+                    $('#approverDD').append(
+                        '<option value="' + data.UserID + '">' + data.UserName + '</option>'
+                    );
+                });
+            }
+        });
+    }
+
+    function loadBuyers() {
+        var urlPath = '@Url.Action("CourierBuyers", "Admin")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                $('#buyerDD').empty();
+                datas.forEach(function (data) {
+                    $('#buyerDD').append(
+                        '<option value="' + data.BuyerId + '">' + data.BuyerName + '</option>'
+                    );
+                });
+            }
+        });
+    }
+
+    function userIdSelectFunction() {
+        UserWiseBusniessUnits();
+        UserWiseApprovers();
+        UserWiseBuyers();
+    }
+
+    function UserWiseBusniessUnits() {
+
+        var userId = $('#user').val();
+
+        var urlPath = '@Url.Action("UserWiseBusinessUnits", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: userId
+            },
+            success: function (datas) {
+                $('#businessUnitTableBody').empty();
+                var i = 0;
+                datas.forEach(function (data) {
+                    $('#businessUnitTableBody').append(
+                        `<tr><td>` + (++i) + `</td>
+                        <td>`+ data.BusinessUnitName + `</td>
+                        <td><button onClick="removeBusinessUnit(`+ data.BusinessUnitId + `)" ><i style="color: black" class="fa fa-trash"></i></button></td></tr>`
+                    );
+                });
+            }
+        });
+    }
+
+    function removeBusinessUnit(id) {
+        var urlPath = '@Url.Action("DeleteUserWiseBusienssUnit", "Admin")';
+        $.ajax({
+            type: 'DELETE',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseBusniessUnits();
+                }
+            }
+        });
+    }
+
+    function addBusinessUnit() {
+
+        var userId = $('#user').val();
+        var businessUnitId = $('#businessUnitDD').val();
+
+        if (userId <= 0) {
+            swal({
+                title: "",
+                text: "You must select a valid user.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        }
+
+        var urlPath = '@Url.Action("AddUserWiseBusienssUnit", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                UserId: userId,
+                BusinessUnitId: businessUnitId
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseBusniessUnits();
+                }
+            }
+        });
+    }
+    
+    function UserWiseApprovers() {
+
+        var userId = $('#user').val();
+
+        var urlPath = '@Url.Action("UserWiseApprovers", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: userId
+            },
+            success: function (datas) {
+                $('#approverTableBody').empty();
+                var i = 0;
+                datas.forEach(function (data) {
+                    $('#approverTableBody').append(
+                        `<tr><td>` + (++i) + `</td>
+                        <td>`+ data.UserName + `</td>
+                        <td>`+ data.Designation + `</td>
+                        <td>`+ data.ApproverSequence + `</td>
+                        <td><button onClick="removeApprover(`+ data.RequestorApproverId + `)" ><i style="color: black" class="fa fa-trash"></i></button></td></tr>`
+                    );
+                });
+            }
+        });
+    }
+
+    function removeApprover(id) {
+        var urlPath = '@Url.Action("DeleteUserWiseApprover", "Admin")';
+        $.ajax({
+            type: 'DELETE',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseApprovers();
+                }
+            }
+        });
+    }
+
+    function addApprover() {
+
+        var requestorId = $('#user').val();
+        var userId = $('#approverDD').val();
+
+        if (requestorId <= 0) {
+            swal({
+                title: "",
+                text: "You must select a valid user.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        }
+
+        var urlPath = '@Url.Action("AddUserWiseApprover", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                RequestorId: requestorId,
+                UserId: userId
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseApprovers();
+                }
+            }
+        });
+    }
+
+    function UserWiseBuyers() {
+
+        var userId = $('#user').val();
+
+        var urlPath = '@Url.Action("UserWiseBuyers", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: userId
+            },
+            success: function (datas) {
+                $('#buyerTableBody').empty();
+                var i = 0;
+                datas.forEach(function (data) {
+                    $('#buyerTableBody').append(
+                        `<tr><td>` + (++i) + `</td>
+                        <td>`+ data.BuyerName + `</td>
+                        <td><button onClick="removeBuyer(`+ data.BuyerId + `)" ><i style="color: black" class="fa fa-trash"></i></button></td></tr>`
+                    );
+                });
+            }
+        });
+    }
+
+    function removeBuyer(id) {
+        var urlPath = '@Url.Action("DeleteUserWiseBuyer", "Admin")';
+        $.ajax({
+            type: 'DELETE',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseBuyers();
+                }
+            }
+        });
+    }
+
+    function removeAllBuyer() {
+        var userId = $('#user').val();
+
+        if (userId <= 0) {
+            swal({
+                title: "",
+                text: "You must select a valid user.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        }
+
+        var urlPath = '@Url.Action("RemoveUserWiseAllBuyer", "Admin")';
+        $.ajax({
+            type: 'DELETE',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                UserId: userId
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseBuyers();
+                }
+            }
+        });
+    }
+
+    function addBuyer() {
+
+        var userId = $('#user').val();
+        var buyerId = $('#buyerDD').val();
+
+        if (userId <= 0) {
+            swal({
+                title: "",
+                text: "You must select a valid user.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        }
+
+        var urlPath = '@Url.Action("AddUserWiseBuyer", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                UserId: userId,
+                BuyerId: buyerId
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseBuyers();
+                }
+            }
+        });
+    }
+
+    function addAllBuyer() {
+
+        var userId = $('#user').val();
+
+        if (userId <= 0) {
+            swal({
+                title: "",
+                text: "You must select a valid user.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        }
+
+        var urlPath = '@Url.Action("AddUserWiseAllBuyer", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                UserId: userId
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseBuyers();
+                }
+            }
+        });
+    }
+
+</script>

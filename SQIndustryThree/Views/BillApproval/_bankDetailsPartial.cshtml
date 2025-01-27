@@ -1,0 +1,55 @@
+﻿@model IEnumerable<SQIndustryThree.Models.BillApproval.BankDetails>
+<style>
+    #BillRequestTable tr th, #BillRequestTable tr td {
+        text-align: center;
+        padding: 5px;
+    }
+
+    button {
+        padding: 0;
+    }
+</style>
+<div class="box">
+    <!--<h3 style="text-align:center">My Visitor Request List</h3>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="col-xs-12" id="personlocdiv">
+            <table id="BillRequestTable" class="table-bordered table table-striped" width="100%" style="overflow:scroll">
+                <thead>
+                    <tr>
+                        <th style="text-align:center">SL</th>
+                        <th style="text-align:center">BankDetailsId</th>
+                        <th style="text-align:center; width:100px;">Bank Name</th>
+                        <th style="text-align:center">SWIFT Code</th>
+                        <th style="text-align:center">Account Type</th>
+                        <th style="text-align:center">Account Number</th>
+                        <th style="text-align:center; width:200px;">Branch</th>
+                        <th style="text-align:center">Beneficiary Name</th>
+                        <th style="text-align:center">Supplier</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int count = 1;}
+                    @foreach (var item in @ViewBag.BankDetails)
+                    {
+                    <tr id="@item["BankDetailsId"]">
+                        <td>@count</td>
+                        <td>@item["BankDetailsId"]</td>
+                        <td>@item["BankName"]</td>
+                        <td>@item["IFSCorSWIFTCode"]</td>
+                        <td>@item["AccountType"]</td>
+                        <td>@item["AccountNumber"]</td>
+                        <td>@item["Branch"]</td>
+                        <td>@item["BeneficiaryName"]</td>
+                        <td>@item["Supplier"]</td>
+                    </tr>
+                        count++;
+
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <!-- /.box-body -->
+</div>

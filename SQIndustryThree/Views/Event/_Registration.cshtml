@@ -1,0 +1,495 @@
+﻿
+<script src="~/Content/ckeditor/ckeditor.js"></script>
+<section class="container-fluid h-100">
+    <div class="">
+        <div style="text-align:right">
+
+        </div>
+    </div>
+    <div class="col-md-12 d-flex justify-content-md-center align-items-center vh-100" style="margin-bottom: 30px;">
+        <form action="#">
+            @*<div class="form-group row">
+                    <label for="name" class="col-md-1">Event ID:</label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" id="event_id" value="@ViewBag.GeneratedID" disabled>
+                    </div>
+                </div>*@
+            <div class="form-group row">
+                <label for="event" class="col-md-2">Event:</label>
+                <div class="col-md-6">
+                    <select class="form-control" id="event">
+                        <option>---Select One---</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="event" class="col-md-2">Location:</label>
+                <div class="col-md-6">
+                    <select class="form-control" id="location">
+                        <option>---Select One---</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="name" class="col-md-2">Name:</label>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="name">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="employeeId" class="col-md-2">Employee ID:</label>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" disabled id="sqPrifix" value="SQ ">
+                        </div>
+                        <div class="col-md-10">
+                            <input type="number" class="form-control" id="employeeId" value="">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="designation" class="col-md-2">Designation:</label>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="designation">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="department" class="col-md-2">Department:</label>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="department">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="sbu" class="col-md-2">SBU:</label>
+                <div class="col-md-6">
+                    <select class="form-control" id="sbu">
+                        <option>---Select One---</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row" style="display:none">
+                <label for="department" class="col-md-2">Member:</label>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="numberofUser">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-6">
+                    <table width="50%" style="text-align:center" border="1" id="genaralInformationTable">
+                        <caption style="text-align: center;  padding: 5px ;background-color: #9bb07e;margin-top:10px;margin-bottom:10px;"><strong>Memenber Details</strong></caption>
+                        @*<h4 style="text-align: center;  padding: 5px ;background-color: #9bb07e;margin-top:10px;margin-bottom:10px;"><strong>User Details</strong></h4>*@
+                        <thead>
+                            <tr>
+                                <th class="required">Team Member</th>
+                                <th class="required">Email</th>
+                                <th class="required">Mobile</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="ammountInformationbody" onchange="calculateGrandTotal()">
+                            <tr>
+                                <td style="width:100px;"><input type="text" id="tableUserName" name="tableUserName" placeholder="Enter Member Name" /></td>
+                                @*<td><input type="text" id="tableUserID" name="tableUserID" placeholder="Enter User ID" /></td>*@
+                                <td style="width:100px;"><input type="text" id="tableEmail" name="tableEmail" placeholder="Enter Email" /></td>
+                                <td style="width:100px;"><input type="text" id="tableContactNo" name="tableContactNo" placeholder="Enter Contact No" /></td>
+                                <td>
+                                    <input type="button" id="addrowbutton" onclick="addnewAmmount()" value="+" />
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2">Total</th>
+                                <th><input style="border:none;pointer-events:none;text-align:center" type="text" id="totalammount" /></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <table width="50%" style="text-align:center" border="1" id="itemInformationTable">
+                        <caption style="text-align: center;  padding: 5px ;background-color: #9bb07e;margin-top:10px;margin-bottom:10px;"><strong>Item Details</strong></caption>
+                        @*<h4 style="text-align: center;  padding: 5px ;background-color: #9bb07e;margin-top:10px;margin-bottom:10px;"><strong>User Details</strong></h4>*@
+                        <thead>
+                            <tr>
+                                <th class="required">Item Name</th>
+                                <th class="required">Unit Price(BDT)</th>
+                                <th class="required">Allergens(If any)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemInformationbody" onchange="calculateGrandTotalI()">
+                            <tr>
+                                <td style="width:100px;"><input type="text" id="tableItemName" name="tableItemName" placeholder="Enter Item Name" /></td>
+                                @*<td><input type="text" id="tableUserID" name="tableUserID" placeholder="Enter User ID" /></td>*@
+                                <td style="width:100px;"><input type="number" id="tableUnitPrice" name="tableEmail" placeholder="Enter Unit Price(BDT)" /></td>
+                                <td style="width:100px;"><input type="text" id="tableAllergens" name="tableAllergens" placeholder="Enter Allergens" /></td>
+                                <td>
+                                    <input type="button" id="addrowbutton" onclick="addnewItem()" value="+" />
+                                </td>
+                            </tr>
+                        </tbody>
+                        @*<tfoot>
+                <tr>
+                    <th colspan="2">Total</th>
+                    <th><input style="border:none;pointer-events:none;text-align:center" type="text" id="totalammountI" /></th>
+                    <th></th>
+                </tr>
+            </tfoot>*@
+                    </table>
+                    <br />
+                </div>
+            </div>
+    <br />
+    <div style="text-align:center;" class="col-md-6">
+        <button type="button" class="btn btn-primary" id="btnSubmit">S U B M I T</button> &nbsp;&nbsp;
+        <button type="button" class="btn btn-info" id="btnNew">B A C K</button>
+    </div>
+    </form>
+
+    </div>
+
+    <div class="row col-md-12">
+        <div class="form-group">
+            <label for="employeeId" style="text-decoration:underline">BULLETIN:</label>
+            <label for="employeeId">RULES AND REGULATIONS </label>
+            <textarea style="width:100%" name="editor1" id="editor1" rows="15" cols="80" disabled>                            
+We at SQ admire the art of creativity and we want to channel this in everything we do. Hence, we are doing the mandatory summer event for every year- summer fruit festival but we are putting our own twist to it. Introducing- “Summer Fusion Fruit Festival- 2022” where we can indulge on all the summer fruits but in a different way- with any food item made with fruits!
+Venue: Café Central
+Event details: 
+1.	Create teams of 5 and select an item that your team will be preparing and selling. Items can be desserts, fruit mixes, salads, juices, or anything unique that you want. 
+2.	Register for the event by June 4, 2022 to book your stall. For registration, log in to AMS and register with the following details:
+Your team name, Member names, Item name, Unit price
+3.	Stalls will be set up to sell the items at the café. The unit price has to be placed in front of the stall along with other decoration as per your choice 
+4.	All logistic support (one time plate, cup, spoon) are to be arranged by the teams
+5.	All proceedings from sales will go to the teams.
+6.	All items will be sold and served as units
+7.	There will be a voting system. People will vote for the item they like the best. 
+8.	The item with the highest number of votes will be awarded. 
+9.	For any support, contact HR. 
+    </textarea>
+            <script>
+                // Replace the <textarea id="editor1"> with a CKEditor 4
+                // instance, using default configuration.
+                CKEDITOR.replace('editor1');
+            </script>
+        </div>
+    </div>
+
+    @*<ol>
+            <li>All participants are required to share in their applications over email by the 10th of November 2021 or they wont be able to participate in the Tournament.</li>
+            <li>The players will play in a pair of 2.</li>
+            <li>The teams will be allocated over lottery placement.</li>
+            <li>Roster for each team will be set for both SQ Central and Station and announced.</li>
+            <li>Each team will be playing 2 matches each in the preliminary round and will get promoted to next round over winning.</li>
+            <li>Each day there will be 3 matches.</li>
+            <li>Participants are not allowed to change their team members at any point of the tournament session.</li>
+            <li>Those participating at SQ Central will compete at Caf&eacute; Central and those at SQ Station will compete at Executive Lounge Respectively.</li>
+            <li>Participants are expected to respect and maintain the rules of the game and the decision of the Referee.</li>
+        </ol>*@
+</section>
+
+<script>
+    @*function btnSubmit() {
+
+    }*@
+    var trrowNo = 0;
+    function deleterow(rowval) {
+        $('tr#' + rowval + '').remove();
+        calculateGrandTotal();
+    }
+    var trrowNoI = 0;
+    function deletedrow(rowval) {
+        $('tr#' + rowval + '').remove();
+        calculateGrandTotalI();
+    }
+    function addnewAmmount() {
+        $('#genaralInformationTable').show();
+        //if ($('#styleName').val() == "") {
+        //    ShowAlert();
+        //} else if ($('#colorName').val() == "") {
+        //    ShowAlert();
+        //} else if ($('#PoName').val() == "") {
+        //    ShowAlert();
+        //} else {
+        trrowNo++;
+        var col = '<tr id="' + trrowNo + '">'
+        col += '<td ><input type="text"  name="tableUserName" placeholder="Enter User Name"  /></td>';
+         col += '<td ><input type="text" name="tableEmail" placeholder="Enter Email"   /></td>';
+        col += '<td ><input type="text" name="tableContactNo" placeholder="Enter Contact No"   /></td>';
+        col += '<td><input type="button" value="x" class="deletebutton" onclick="deleterow(' + trrowNo + ')" /></td></tr>';
+        $("#ammountInformationbody").append(col);
+        calculateGrandTotal();
+        //}
+       // LoadDesignationa("#tableDesignation" + trrowNo);
+        //LoadDepartmenta("#tableDepartment" + trrowNo)
+        // alert("#tableDesignation" + trrowNo);
+    }
+    function addnewItem() {
+        $('#itemInformationTable').show();
+        //if ($('#styleName').val() == "") {
+        //    ShowAlert();
+        //} else if ($('#colorName').val() == "") {
+        //    ShowAlert();
+        //} else if ($('#PoName').val() == "") {
+        //    ShowAlert();
+        //} else {
+        trrowNoI++;
+        var col = '<tr id="' + trrowNoI + '">'
+        col += '<td ><input type="text"  name="tableItemName" placeholder="Enter Item Name"  /></td>';
+        col += '<td ><input type="number" name="tableUnitPrice" placeholder="Enter Unit Price(BDT)"   /></td>';
+        col += '<td ><input type="text" name="tableAllergens" placeholder="Enter Allergens"   /></td>';
+        col += '<td><input type="button" value="x" class="deletebutton" onclick="deletedrow(' + trrowNoI + ')" /></td></tr>';
+        $("#itemInformationbody").append(col);
+        calculateGrandTotalI();
+        //}
+
+    }
+    function calculateGrandTotal() {
+        var grandTotal = 0;
+        $("#ammountInformationbody tr").each(function () {
+            var myammount = $(this).find('input[name^="tableammount"]').val();
+            grandTotal += (1 * 1);
+        });
+        $("#totalammount").val(grandTotal);
+        $("#numberofUser").val(grandTotal);
+        // LoadApproverList();
+
+    }
+    function calculateGrandTotalI() {
+        var grandTotalI = 0;
+        $("#itemInformationTable tr").each(function () {
+            var myammount = $(this).find('input[name^="tableammount"]').val();
+            grandTotalI += (1 * 1);
+        });
+        $("#totalammountI").val(grandTotalI);
+       // $("#numberofUser").val(grandTotal);
+        // LoadApproverList();
+
+    }
+    $('#btnSubmit').click(function () {
+
+        var event = $('#event').val().trim();
+        var location = $('#location').val().trim();
+        var name = $('#name').val().trim();
+        var sqPrifix = $('#sqPrifix').val();
+        var employeeId = $('#employeeId').val().trim();
+        var designation = $('#designation').val().trim();
+        var department = $('#department').val().trim();
+        var sbu = $('#sbu').val().trim();
+
+        if (event == '0') {
+            toastr.error("Please Select Event", " Event ",
+                {
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "closeButton": true
+                });
+        }
+        else if (location == '0') {
+            toastr.error("Please Select Location", " Location ",
+                {
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "closeButton": true
+                });
+        }
+        else if (name == '') {
+            toastr.error("Please Enter Name", " Name ",
+                {
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "closeButton": true
+                });
+        }
+        else if (employeeId == '') {
+            toastr.error("Please Enter EmployeeID", " EmployeeID ",
+                {
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "closeButton": true
+                });
+        }
+        else if (designation == '') {
+            toastr.error("Please Enter Designation", " Designation ",
+                {
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "closeButton": true
+                });
+        }
+        else if (department == '') {
+            toastr.error("Please Select Department", " Department ",
+                {
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "closeButton": true
+                });
+        }
+        else if (sbu == '') {
+            toastr.error("Please Select Business Unit", " Business Unit ",
+                {
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "closeButton": true
+                });
+        }
+        else if ($("#numberofUser").val() > "5") {
+            swal({
+                title: 'Please Enter only 5 Team Member Name ',
+                type: 'error',
+                closeOnCancel: true
+            });
+
+
+            return false;
+        }
+        else {
+
+            swal({
+                title: "Are you sure to submit for registration?",
+                text: "",
+                type: "info",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: " Yes ",
+                cancelButtonText: " No ",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        var jsondate = SaveVehicleRequest();
+                        //location.replace('/BillApproval/AddQuality');
+
+                        /*swal("Deleted!", "Your imaginary file has been deleted.", "success");*/
+                        @*var urlpath = '@Url.Action("EventSubmit", "Event")';
+                        $.ajax({
+                            url: urlpath,
+                           // dataType: 'json',
+                            type: "Post",
+                            data: JSON.stringify(jsondate),
+                           // data: { eventId: event, location: location, name: name, employeeId: sqPrifix + employeeId, designation: designation, department: department, sbu: sbu },
+                            async: true,
+                            success: function (data) {
+                                //alert(data);
+                                if (data.msg == 'Data Inserted Successfully') {
+                                    swal("Successful!", 'Registration  completed successfully. Registration No. ' + data.registerId, "success");
+                                    //location.reload();
+                                    Reset();
+                                }
+                                else {
+
+                                    swal("Failed!", data.msg, "warning");
+                                }
+
+                            }
+                        });*@
+                          var urlpath = '@Url.Action("EventSubmit", "Event")';
+            $.ajax({
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(jsondate),
+                url: urlpath,
+                type: "POST",
+                async: true,
+                success: function (data) {
+                    swal({
+                        title: 'Registration  completed successfully',
+                        type: 'success',
+                        closeOnCancel: true
+                    },function () {
+                            //$("#myModal").modal("hide");
+                            //$("#iousubmenu").find('li').removeClass();
+                            //$("#iousubmenu").find('li:nth-child(2)').addClass("active");
+                            //GetAllVehicleRequest(1, 0);
+                       //location.reload();
+                        Reset();
+                    });
+                },
+                error: function () {
+                    alert("Error");
+                }
+            });
+                    }
+                }
+            );
+
+
+
+        }
+
+    })
+    function SaveVehicleRequest() {
+        debugger;
+        var jsonData = {};
+
+
+
+        jsonData["EventID"] = $("#event").val();
+        jsonData["LocationID"] = $("#location").val();
+        jsonData["Name"] = $("#name").val();
+        jsonData["sqPrifix"] = $("#sqPrifix").val();
+        jsonData["EmployeeID"] = $("#employeeId").val();
+        jsonData["Designation"] = $("#designation").val();
+        jsonData["Department"] = $("#department").val();
+        jsonData["BusinessUnitID"] = $("#sbu").val();
+
+        var ammountList = [];
+        $('#ammountInformationbody tr').each(function () {
+            var myData = {};
+             myData["MemberUserName"] = $(this).find('input[name^="tableUserName"]').val();
+            myData["PhoneNo"] = $(this).find('input[name^="tableContactNo"]').val();
+            myData["MemberEmail"] = $(this).find('input[name^="tableEmail"]').val();
+            ammountList.push(myData);
+        });
+        jsonData["MemberDetailsList"] = ammountList;
+        var itemList = [];
+        $('#itemInformationbody tr').each(function () {
+            var myData = {};
+            myData["ItemName"] = $(this).find('input[name^="tableItemName"]').val();
+            myData["UnitPrice"] = $(this).find('input[name^="tableUnitPrice"]').val();
+            myData["Allergens"] = $(this).find('input[name^="tableAllergens"]').val();
+            itemList.push(myData);
+        });
+        jsonData["ItemDetailsList"] = itemList;
+
+        return jsonData;
+    }
+    function Reset() {
+        $('#event').val('0');
+        $('#location').val('0');
+        $('#name').val('');
+        $('#employeeId').val('');
+        $('#designation').val('');
+        $('#department').val('');
+        $('#sbu').val('');
+    }
+
+    $('#btnNew').click(function () {
+        Reset();
+    })
+</script>

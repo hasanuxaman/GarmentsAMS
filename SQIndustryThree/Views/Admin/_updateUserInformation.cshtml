@@ -1,0 +1,104 @@
+﻿@model SQIndustryThree.Models.UserInformationModel
+
+@{
+    ViewBag.Title = "_updateUserInformation";
+}
+
+<div id="myprintmodal">
+    <h3 style="color: black;
+        text-align: center;
+        font-weight: bold">
+    </h3>
+    <div>
+        <span style="float:right;">
+            @if (Model.Revision > 0)
+            {
+                <p style="text-align:center;font-weight:bold">
+                    No. of Revision: @Model.Revision
+                </p>
+            }
+        </span>
+    </div>
+
+    <div class="row">
+        <div>
+
+        </div>
+        <div>
+            <input id="primarykey" type="hidden" value="@Model.UserId" />
+            <table border="1" width="90%" align="center" style="overflow-wrap:initial" class="">
+
+                <caption>User Information</caption>
+                <tbody>
+                    <tr>
+                        <td width="20%">User Id</td>
+                        <td><input id="leadTimeFrom" style="width:100%;overflow-wrap:break-word" disabled type="text" value="@Model.UserId" /> </td>
+
+                    </tr>
+                    <tr>
+                        <td width="20%">Name</td>
+                        <td><input id="UserName" style="width:100%;overflow-wrap:break-word" type="text" value="@Model.UserName" /> </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">Email</td>
+                        <td><input id="UserEmail" style="width:100%;overflow-wrap:break-word" type="text" value="@Model.UserEmail" /> </td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td><input id="UserPhone" style="width:100%;overflow-wrap:break-word" type="text" value="@Model.UserPhone" /> </td>
+                    </tr>
+                    <tr style="display:none">
+                        <td>User Password</td>
+                        <td><input id="UserPassword" style="width:100%;overflow-wrap:break-word" type="text" value="@Model.UserPassword" /> </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">Unit</td>
+                        <td>
+                            <select id="business_unit">
+                                <option value="@Model.BusinessUnitId">@Model.BusinessUnitName</option>
+                            </select>
+                            <i style="width:20%;color:green;padding-left:2px;cursor:pointer" onclick="LoadBusinessUnit();" class="fa fa-refresh">Change</i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">Designation Name</td>
+                        <td>
+                            <select id="designation_select">
+                                <option value="@Model.DesignationID">@Model.DesignationName</option>
+                            </select>
+                            <i style="width:20%;color:green;padding-left:2px;cursor:pointer" onclick="LoadDesignation();" class="fa fa-refresh">Change</i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">Is Active</td>
+                        <td>
+                            <input type="checkbox" checked id="IsActive" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="text-align:center">
+            <br />
+            <button type="button" style="width:30%" class="btn btn-primary btn-sm" onclick="UpdateUserInfo(@Model.UserId)">Update </button>
+        </div>
+    </div>
+</div>
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+    debugger;
+    var checkbox = document.querySelector('input[type="checkbox"]');
+    checkbox.addEventListener('change', function (e) {
+      // alert(this.checked);
+        var IsActive = $("input[id='IsActive']").is(':checked');
+       // alert(IsActive);
+    });
+
+    var IsActive = $("input[id='IsActive']").is(':checked');
+  //  alert(IsActive);
+    //$('#test').click(function () {
+    //    alert("Checkbox state (method 1) = " + $('#test').prop('checked'));
+    //    alert("Checkbox state (method 2) = " + $('#test').is(':checked'));
+    //});
+</script>

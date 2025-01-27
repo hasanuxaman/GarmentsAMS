@@ -1,0 +1,297 @@
+﻿
+@{
+    ViewBag.Title = "Import Consignment Dashboard";
+}
+
+<style type="text/css">
+    .table {
+        display: block;
+        overflow-x: auto;
+    }
+
+        .table tr th, td {
+            min-width: 70px;
+        }
+
+    .table-div {
+        margin-top: 20px;
+        font-size: 12px;
+    }
+
+    #inputTable tr td {
+        padding: 2px;
+        text-align: center;
+    }
+
+    /*#inputTable tr th {
+        text-align: center;
+    }*/
+</style>
+
+<div class="container-fluid">
+    <h3 style="text-align: center;">
+        <b>Import Consignment Dashboard</b>
+    </h3>
+    <hr style="margin: 0px" />
+    <div class="row">
+        <div class="col-md-12">
+            <table width="100%" id="inputTable">
+                <tr>
+                    <td width="20%">
+                        <label>From Date</label>
+                        <input type="date" id="fromDate" class="form-control" />
+                    </td>
+                    <td width="20%">
+                        <label>To Date</label>
+                        <input type="date" id="toDate" class="form-control" />
+                    </td>
+                    <td width="20%">
+                        <label>Busniess Unit</label>
+                        <select id="businessUnit" class="form-control">
+                            <option value="0">All Business Units</option>
+                        </select>
+                    </td>
+                    <td width="20%">
+                        <label>Buyer</label>
+                        <select class="form-control" id="buyer"></select>
+                    </td>
+                    <td width="20%">
+                        <label>Shipper</label>
+                        <select class="form-control" id="shipper"></select>
+                    </td>
+                    @*<td width="10%">
+                            <a href="javascript:void(0)" id="filterButton" class="btn btn-success"><i class="fa fa-filter"></i> Filter</a>
+                        </td>*@
+                </tr>
+            </table>
+            <div style="text-align:center">
+                <br />
+                <a href="javascript:void(0)" id="filterButton" class="btn btn-success"><i class="fa fa-filter"></i> Filter Results</a>
+            </div>
+        </div>
+    </div>
+    <div class="table-div">
+        <table width="100%" cellpadding="5" cellspacing="0" border="1" id="dashboardTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Tracking Id</th>
+                    <th>Date</th>
+                    <th>Business Unit</th>
+                    <th>Buyer</th>
+                    <th>Shipper</th>
+                    <th>Account Lead</th>
+                    <th>Port Of Loading</th>
+                    <th>Goods Description</th>
+                    <th>Mode Of Shipment</th>
+                    <th>Forwarder / Carrier</th>
+                    <th>Container Type</th>
+                    <th>Container Size</th>
+                    <th>HBL / HAWB NO.</th>
+                    <th>BL / AWAB DT.</th>
+                    <th>LC NO.</th>
+                    <th>Invoice NO.</th>
+                    <th>Value in USD</th>
+                    <th>GR. Weight In KG</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                    <th>ETD</th>
+                    <th>ETA</th>
+                    <th>Berthing Date</th>
+                    <th>CBM</th>
+                    <th>Assesment Status</th>
+                    <th>OTT DT</th>
+                    <th>PCD</th>
+                    <th>Tentative Delivery Date</th>
+                    <th>Balance</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody id="dashboardTableBody">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+    $(document).ready(function () {
+        LoadCompanies();
+        LoadBuyerList();
+        LoadShippers();
+        LoadDashBoard();
+    });
+
+    function LoadDashBoard() {
+        var urlPath = '@Url.Action("LoadImportConsignmentDashboardData", "Import")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            async: false,
+            data: {
+                _fromDate: '',
+                _toDate: '',
+                _businessUnitId: 0,
+                _buyerId: 0,
+                _shipperId: 0
+            },
+            success: function (datas) {
+                table = $('#dashboardTableBody');
+                table.empty();
+                datas.forEach(function (data) {
+                    table.append(`<tr>
+                                            <td>`+ data.TrackingId + `</td>
+                                            <td>`+ data.Date + `</td>
+                                            <td>`+ data.BusinessUnit + `</td>
+                                            <td>`+ data.Buyer + `</td>
+                                            <td>`+ data.Shipper + `</td>
+                                            <td>`+ data.AccountLeadName +`</td>
+                                            <td>`+ data.PortOfLoading +`</td>
+                                            <td>`+ data.GoodsDescription +`</td>
+                                            <td>`+ data.ModeOfShipment +`</td>
+                                            <td>`+ data.ForwarderOrCarrierName +`</td>
+                                            <td>`+ data.ContainerTypeName +`</td>
+                                            <td>`+ data.ContainerSizeName +`</td>
+                                            <td>`+ data.HBLorHAWBNo +`</td>
+                                            <td>`+ data.BLorAWABDt +`</td>
+                                            <td>`+ data.LCNo +`</td>
+                                            <td>`+ data.InvoiceNo +`</td>
+                                            <td>`+ data.ValueInUSD +`</td>
+                                            <td>`+ data.GrWeightInKg +`</td>
+                                            <td>`+ data.Quantity +`</td>
+                                            <td>`+ data.ICUnitName +`</td>
+                                            <td>`+ data.ETD +`</td>
+                                            <td>`+ data.ETA +`</td>
+                                            <td>`+ data.BerthingDate +`</td>
+                                            <td>`+ data.CBM +`</td>
+                                            <td>`+ data.AssesmentStatus +`</td>
+                                            <td>`+ data.OTTDt +`</td>
+                                            <td>`+ data.PCD +`</td>
+                                            <td>`+ data.TentativeDeliveryDate +`</td>
+                                            <td>`+ data.Balance +`</td>
+                                            <td>`+ data.Remarks +`</td>
+                                        </tr>`);
+                });
+            }
+        });
+
+        $('#dashboardTable').dataTable();
+    }
+
+    function LoadBuyerList() {
+        $('#buyer').css({ "border-color": "#d3d3d3" });
+        var urlpath = '@Url.Action("AllBuyerList", "Exception")';
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "GET",
+            async: false,
+            success: function (data) {
+                $('#buyer').empty();
+                $('#buyer').append("<option value='0'>--All Buyers--</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#buyer").append($("<option></option>").val(data[i].BuyerId)
+                        .html(data[i].BuyerName));
+                }
+            }
+        });
+    }
+
+    function LoadCompanies() {
+        $('#businessUnit').css({ "border-color": "#d3d3d3" });
+        var urlpath = '@Url.Action("LoadComapanies", "Import")';
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "GET",
+            async: false,
+            success: function (data) {
+                $('#businessUnit').empty();
+                $('#businessUnit').append("<option value='0'>--All Business Units--</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#businessUnit").append($("<option></option>").val(data[i].Value)
+                        .html(data[i].Text));
+                }
+            }
+        });
+    }
+
+    function LoadShippers() {
+        $('#shipper').css({ "border-color": "#d3d3d3" });
+        var urlpath = '@Url.Action("LoadShippers", "Import")';
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "GET",
+            async: false,
+            success: function (data) {
+                $('#shipper').empty();
+                $('#shipper').append("<option value='0'>--All Shippers--</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#shipper").append($("<option></option>").val(data[i].Value)
+                        .html(data[i].Text));
+                }
+            }
+        });
+    }
+
+    $('#filterButton').click(function () {
+        $('#dashboardTable').dataTable().fnClearTable();
+        $('#dashboardTable').dataTable().fnDestroy();
+        var urlPath = '@Url.Action("LoadImportConsignmentDashboardData", "Import")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            async: false,
+            data: {
+                _fromDate: $('#fromDate').val(),
+                _toDate: $('#toDate').val(),
+                _businessUnitId: $('#businessUnit').val(),
+                _buyerId: $('#buyer').val(),
+                _shipperId: $('#shipper').val()
+            },
+            success: function (datas) {
+                table = $('#dashboardTableBody');
+                table.empty();
+                datas.forEach(function (data) {
+                    table.append(`<tr>
+                                            <td>`+ data.TrackingId + `</td>
+                                            <td>`+ data.Date + `</td>
+                                            <td>`+ data.BusinessUnit + `</td>
+                                            <td>`+ data.Buyer + `</td>
+                                            <td>`+ data.Shipper + `</td>
+                                            <td>`+ data.AccountLeadName + `</td>
+                                            <td>`+ data.PortOfLoading + `</td>
+                                            <td>`+ data.GoodsDescription + `</td>
+                                            <td>`+ data.ModeOfShipment + `</td>
+                                            <td>`+ data.ForwarderOrCarrierName + `</td>
+                                            <td>`+ data.ContainerTypeName + `</td>
+                                            <td>`+ data.ContainerSizeName + `</td>
+                                            <td>`+ data.HBLorHAWBNo + `</td>
+                                            <td>`+ data.BLorAWABDt + `</td>
+                                            <td>`+ data.LCNo + `</td>
+                                            <td>`+ data.InvoiceNo + `</td>
+                                            <td>`+ data.ValueInUSD + `</td>
+                                            <td>`+ data.GrWeightInKg + `</td>
+                                            <td>`+ data.Quantity + `</td>
+                                            <td>`+ data.ICUnitName + `</td>
+                                            <td>`+ data.ETD + `</td>
+                                            <td>`+ data.ETA + `</td>
+                                            <td>`+ data.BerthingDate + `</td>
+                                            <td>`+ data.CBM + `</td>
+                                            <td>`+ data.AssesmentStatus + `</td>
+                                            <td>`+ data.OTTDt + `</td>
+                                            <td>`+ data.PCD + `</td>
+                                            <td>`+ data.TentativeDeliveryDate + `</td>
+                                            <td>`+ data.Balance + `</td>
+                                            <td>`+ data.Remarks +`</td>
+                                        </tr>`);
+                });
+            }
+        });
+
+        $('#dashboardTable').dataTable();
+    });
+
+</script>

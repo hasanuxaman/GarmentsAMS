@@ -1,0 +1,164 @@
+﻿@*@model IEnumerable<SQIndustryThree.Models.PositionCodeDetails>
+    @{
+        ViewBag.Title = "_PositionCodePertialView";
+    }*@
+<style>
+    th {
+        text-align: center;
+    }
+
+    td {
+        text-align: center;
+    }
+</style>
+<div class="box">
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="col-xs-12" id="personlocdiv">
+            <table style="text-align:center" border="1" id="genaralInformationTableDeatils" class="table-responsive">
+                <caption style="text-align: center;  padding: 5px ;background-color: #9bb07e;margin-top:10px;margin-bottom:10px;"><strong>Head Details</strong></caption>
+                @*<h4 style="text-align: center;  padding: 5px ;background-color: #9bb07e;margin-top:10px;margin-bottom:10px;"><strong>User Details</strong></h4>*@
+                <thead id="table">
+                    <tr>
+                        <th class="required">Unit</th>
+                        <th class="required">Section</th>
+                        @*<th style="display:none">User ID</th>*@
+                        <th class="required">Sub Section</th>
+                        <th class="required">Designation</th>
+                        <th>Category</th>
+                        <th>Additional Manpower</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="ammountInformationbody">
+                    <tr>
+                        <td><select type="text" style="width:100px;" id="tableUnit" name="tableUnit" placeholder="Enter Designation" /></td>
+                        <td><select type="text" style="width:100px;" id="tableSection" name="tableSection" placeholder="Enter Designation" /></td>
+                        @*<td><input type="text" id="tableUserID" name="tableUserID" placeholder="Enter User ID" /></td>*@
+                        <td><select type="text" style="width:100px;" id="tableSubSection" name="tableSubSection" placeholder="Enter Designation" /></td>
+                        <td><select type="text" style="width:100px;" id="tableDesignation" name="tableDesignation" placeholder="Enter Designation" /></td>
+                        <td><select type="text" style="width:100px;" id="tableCategory" name="tableCategory" placeholder="Enter Designation" /></td>
+                        <td><input type="text" style="width:100px;" id="tableHead" name="tableHead" placeholder="Enter Head" onchange="calculateGrandTotald()" /></td>
+                        <td>
+                            <input type="button" id="addrowbutton" onclick="addnewAmmount()" value="+" />
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="3">Total</th>
+                        <th></th>
+                        <th></th>
+                        <th><input style="border:none;pointer-events:none;text-align:center" type="text" id="totalammount" /></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <!-- /.box-body -->
+</div>
+<!-- /.box -->
+<script src="~/Assets/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/Assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script>
+    LoadSection();
+    LoadSubSection();
+    LoadUnit();
+    LoadCategory();
+    LoadDesignation();
+        function LoadDesignation() {
+        var urlpath = '@Url.Action("LoadDesignation", "ExceptionRequest")';
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "Post",
+            data: {},
+            async: true,
+            success: function (data) {
+                $('#tableDesignation').empty();
+                $('#tableDesignation').append("<option value='0'>Select Designation Unit</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#tableDesignation").append($("<option></option>").val(data[i].DesignationId)
+                        .html(data[i].DesignationName));
+                }
+            }
+        });
+    }
+      function LoadUnit() {
+        var urlpath = '@Url.Action("LoadUnit", "ExceptionRequest")';
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "Post",
+            data: {},
+            async: true,
+            success: function (data) {
+                $('#tableUnit').empty();
+                $('#tableUnit').append("<option value='0'>Select Unit</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#tableUnit").append($("<option></option>").val(data[i].UnitId)
+                        .html(data[i].UnitName));
+                }
+            }
+        });
+    }
+    function LoadSection() {
+        var urlpath = '@Url.Action("LoadSection", "ExceptionRequest")';
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "Post",
+            data: {},
+            async: true,
+            success: function (data) {
+                $('#tableSection').empty();
+                $('#tableSection').append("<option value='0'>Select Section</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#tableSection").append($("<option></option>").val(data[i].SectionId)
+                        .html(data[i].SectionName));
+                }
+            }
+        });
+    }
+    function LoadSubSection() {
+        var urlpath = '@Url.Action("LoadSubSection", "ExceptionRequest")';
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "Post",
+            data: {},
+            async: true,
+            success: function (data) {
+                $('#tableSubSection').empty();
+                $('#tableSubSection').append("<option value='0'>Select Sub Section</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#tableSubSection").append($("<option></option>").val(data[i].SubSectionId)
+                        .html(data[i].SubSectionName));
+                }
+            }
+        });
+    }
+    function LoadCategory() {
+        var urlpath = '@Url.Action("LoadCategory", "ExceptionRequest")';
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "Post",
+            data: {},
+            async: true,
+            success: function (data) {
+                $('#tableCategory').empty();
+                $('#tableCategory').append("<option value='0'>Select Category</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#tableCategory").append($("<option></option>").val(data[i].CategoryId)
+                        .html(data[i].CategoryName));
+                }
+            }
+        });
+    }
+    @*$(function () {
+        $("#pending_Capex").html("("+@Model.Count()+")");
+    });*@
+</script>

@@ -1,0 +1,139 @@
+﻿<div style="margin: 20px" class="row">
+    <div class="col-md-4">
+        <label>Upload Courier Rate Matrix (<a href="\DocumentCenter\Sample of Courier Rate Chart.xls">Donwload the format</a>)</label>
+        <input type="file" placeholder="Upload Rates" id="fileUpload" class="form-control" />
+        <br />
+        <input type="button" value="Upload" onclick="Upload()" class="btn btn-success" />
+        <input type="button" value="Insert Data" onclick="InsertData()" class="btn btn-primary" />
+    </div>
+</div>
+<div style="margin: 20px;">
+    <table class="table table-bordered" id="rateChartPreviewTable">
+        
+    </table>
+</div>
+
+<script src="~/Scripts/jszip.js"></script>
+<script src="~/Scripts/xlsx.full.min.js"></script>
+<script type="text/javascript">
+    var courierRates = [];
+    function Upload() {
+
+        var fileUpload = document.getElementById("fileUpload");
+
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
+
+        if (regex.test(fileUpload.value.toLowerCase())) {
+            if (typeof (FileReader) != "undefined") {
+                var reader = new FileReader();
+
+                //For Browsers other than IE.
+                if (reader.readAsBinaryString) {
+                    reader.onload = function (e) {
+                        ProcessExcel(e.target.result);
+                    };
+                    reader.readAsBinaryString(fileUpload.files[0]);
+                } else {
+                    //For IE Browser.
+                    reader.onload = function (e) {
+                    var data = "";
+                    var bytes = new Uint8Array(e.target.result);
+                    for (var i = 0; i < bytes.byteLength; i++) {
+                        data += String.fromCharCode(bytes[i]);
+                    }
+                        ProcessExcel(data);
+                    };
+                    reader.readAsArrayBuffer(fileUpload.files[0]);
+                }
+            } else {
+                alert("This browser does not support HTML5.");
+                $('#rateChartPreviewTable').empty();
+            }
+        } else {
+            alert("Please upload a valid Excel file.");
+            $('#rateChartPreviewTable').empty();
+        }
+    };
+
+
+    function ProcessExcel(data) {
+
+        if ($('#fileUpload').val() == "") {
+            swal("Please Upload The File First");
+            $('#rateChartPreviewTable').empty();
+        } else {
+            var workbook = XLSX.read(data, { type: 'binary' });
+
+            var firstSheet = workbook.SheetNames[0];
+
+            var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+
+            excelRows.forEach(function (data) {
+                courierRates.push(
+                    {
+                        WeightRange: data.WeightRange,
+                        Country: data.Country,
+                        ServiceProvider: data.ServiceProvider,
+                        Currency: data.Currency,
+                        Rate: data.Rate,
+                        LeadTimeFrom: data.LeadTimeFrom,
+                        LeadTimeTo: data.LeadTimeTo,
+                        Type: data.Type.toLowerCase() == "outbound" ? "O" : "I"
+                    }
+                );
+            });
+
+            console.log(courierRates);
+            $('#rateChartPreviewTable').empty();
+            $('#rateChartPreviewTable').append(`<caption>Preview of courier rate chart entry</caption>
+                                                <tr>
+                                                    <th>WeightRange</th>
+                                                    <th>Country</th>
+                                                    <th>ServiceProvider</th>
+                                                    <th>Currency</th>
+                                                    <th>Rate</th>
+                                                    <th>LeadTimeFrom</th>
+                                                    <th>LeadTimeTo</th>
+                                                    <th>Type</th>
+                                                </tr>`);
+
+            courierRates.forEach(function (data) {
+                $('#rateChartPreviewTable').append(`<tr>
+                                                    <td>`+ data.WeightRange +`</td>
+                                                    <td>`+ data.Country +`</td>
+                                                    <td>`+ data.ServiceProvider+`</td>
+                                                    <td>`+ data.Currency+`</td>
+                                                    <td>`+ data.Rate+`</td>
+                                                    <td>`+ data.LeadTimeFrom+`</td>
+                                                    <td>`+ data.LeadTimeTo+`</td>
+                                                    <td>`+ data.Type+`</td>
+                                                </tr>`);
+            });
+        }
+    };
+
+    function InsertData() {
+        var urlPath = '@Url.Action("AddCourierRateChart", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                CourierRates: courierRates
+            },
+            success: function (datas) {
+                swal({
+                    title: "Success!",
+                    text: "Data Successfully Inserted",
+                    type: "success",
+                    button: "OK"
+                });
+                $('#rateChartPreviewTable').empty();
+                $('#fileUpload').val('');
+            },
+            error: function () {
+                alert('An Error Occured!');
+            }
+        });
+    }
+</script>

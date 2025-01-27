@@ -1,0 +1,81 @@
+﻿@model IEnumerable<SQIndustryThree.Models.CourierRequestModel>
+@{
+    ViewBag.Title = "_pendingPertialView";
+}
+<style>
+    th {
+        text-align: center;
+    }
+
+    td {
+        text-align: center;
+    }
+</style>
+<font size="2" face="Calibri">
+    <div class="box">
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="col-xs-12" id="personlocdiv">
+                <table id="excepReportTable" class="table-bordered table table-responsive">
+                    <caption>All Courier List</caption>
+                    <thead>
+                        <tr>
+                            <th>SL</th>
+                            <th>Request Number</th>
+                            <th>Business Unit</th>
+                            <th>Courier Type</th>
+                            <th>Country Name</th>
+                            <th>Service Provider</th>
+                            <th>Product Description</th>
+                            <th>Weight</th>
+                            <th>Cost</th>
+                            <th>Buyer Name</th>
+                            <th>Request By</th>
+                            <th>Create Date</th>
+                            <th>Action(Comments)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int count = 1;}
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.CourierRequestId</td>
+                            <td>@item.BusinessUnitName</td>
+                            <td>@item.CourierType</td>
+                            <td>@item.CountryName</td>
+                            <td>@item.ServiceProvider</td>
+                            <td>@item.ProductDescription</td>
+                            <td>@item.Weight</td>
+                            <td>@item.Cost</td>
+                            <td>@item.BuyerName</td>
+                            <td>@item.UserName</td>
+                            <td>@DateTime.Parse(@item.CreateDate).ToString("dd MMM yyyy")</td>
+                            <td>
+                                @if (item.IsApproved == 1)
+                                {
+                                    <button type="button" class="btn  btn-block btn-success btn-sm" data-toggle="modal" data-target="#myModal" onclick="CourierReportDetails(@item.CourierRequestId,0,'_modalCourierRequestReportView')" data-idkey="@item.CourierRequestId">Approved</button>
+                                }
+                                else if (item.IsApproved == 2)
+                                {
+                                    <button type="button" class="btn  btn-block btn-danger btn-sm" data-toggle="modal" data-target="#myModal" onclick="CourierReportDetails(@item.CourierRequestId,0,'_modalCourierRequestReportView')" data-idkey="@item.CourierRequestId">Rejected</button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn  btn-block btn-primary btn-sm" data-toggle="modal" data-target="#myModal" onclick="CourierReportDetails(@item.CourierRequestId,0,'_modalCourierRequestReportView')" data-idkey="@item.CourierRequestId">Pending</button>
+                                }
+                            </td>
+                        </tr>
+                            count++;
+
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+</font>
+

@@ -1,0 +1,183 @@
+﻿@{
+    ViewBag.Title = "Import Consignment List";
+}
+
+<style>
+    @@media (min-width: 992px) {
+    .modal-lg {
+        width: 1250px;
+    }
+}
+    .modal-body {
+        font-size: 13px;
+        overflow-x: auto;
+    }
+</style>
+
+<div style="margin:0px 25px 0px 25px;">
+    <a href="/Import/AddNewImportConsignment" class="btn btn-primary" style="float:right;"><i class="fa fa-plus"></i> Add New</a>
+</div>
+
+<div style="min-height:550px; margin:40px 25px 0px 25px;">
+    
+    <table width="100%" cellpadding="5" cellspacing="0" border="1" id="importConsignmentDetailsTable" class="table table-striped">
+        <caption>Import Consignment List</caption>
+        <thead>
+            <tr>
+                <th style="max-width: 90px;">Tracking No</th>
+                <th>Date</th>
+                <th>Business Unit</th>
+                <th>Buyer</th>
+                <th>Shipper</th>
+                <th>Details</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="importConsignmentDetailsBody">
+        </tbody>
+    </table>
+
+    <div class="modal" id="detailsModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" style="text-align: center">Details</h4>
+                </div>
+                <div id="detailsModalBody" class="modal-body">
+                    <table width="100%" cellpadding="5" cellspacing="0" border="1" id="detailsModalTable" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Account Lead</th>
+                                <th>Port Of Loading</th>
+                                <th>Goods Description</th>
+                                <th>Mode Of Shipment</th>
+                                <th style="min-width: 114px;">Forwarder / Carrier</th>
+                                <th>Container Type</th>
+                                <th>Container Size</th>
+                                <th style="min-width: 85px;">HBL / HAWB NO.</th>
+                                <th style="min-width: 85px;">BL / AWAB DT.</th>
+                                <th>LC NO.</th>
+                                <th>Invoice NO.</th>
+                                <th style="min-width: 85px;">Value in USD</th>
+                                <th style="min-width: 85px;">GR. Weight In KG</th>
+                                <th>Quantity</th>
+                                <th>Unit</th>
+                                <th>ETD</th>
+                                <th>ETA</th>
+                                <th>Berthing Date</th>
+                                <th>CBM</th>
+                                <th>Assesment Status</th>
+                                <th>OTT DT</th>
+                                <th>PCD</th>
+                                <th style="min-width: 90px;">Tentative Delivery Date</th>
+                                <th>Balance</th>
+                                <th>Remarks</th>
+                                <th>Attachments</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailsModalTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="modalCloseButton" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        loadImportConsignmentList();
+        //loadImportConsignmentDetailsData();
+    });
+
+    function loadImportConsignmentList() {
+        var urlPath = '@Url.Action("AllImportConsignmentList", "Import")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                table = $('#importConsignmentDetailsBody');
+                table.empty();
+                datas.forEach(function (data) {
+                    var editButton = data.IsFinal == true ? "" : `<a href="/Import/AddNewImportConsignment?id=` + data.ImportConsignmentMasterId + `" class="btn btn-primary"><i class="fa fa-edit"></i></a>`;
+                    table.append(`<tr>
+                                            <td>`+ data.ImportConsignmentMasterId + `</td>
+                                            <td>`+ data.Date + `</td>
+                                            <td>`+ data.BusinessUnitName + `</td>
+                                            <td>`+ data.BuyerName + `</td>
+                                            <td>`+ data.ShipperName +`</td>
+                                            <td><a href="#" onclick="showModal(` + data.ImportConsignmentMasterId + `)" class="btn btn-primary">Details</a></td>
+                                            <td>` + editButton + `</td>
+                                        </tr>`);
+                });
+                $('#importConsignmentDetailsTable').DataTable();
+            }
+        });
+    }
+
+    function showDataOnModal(aid) {
+        var urlPath = '@Url.Action("ImportConsignmentDetailsListForMasterId", "Import")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            data: { id: aid },
+            success: function (datas) {
+                table = $('#detailsModalTableBody');
+                table.empty();
+                datas.forEach(function (data) {
+                    let attachments = '';
+                    data.ImportConsignmentFiles.forEach(function (subData) {
+                        attachments += `<a href="` + subData.ShortPath + `" download>` + subData.FileName + `</a><br>`;
+                    });
+
+                    table.append(`<tr>
+                                    <td>`+ data.AccountLeadName + `</td>
+                                            <td>`+ data.PortOfLoading + `</td>
+                                            <td>`+ data.GoodsDescription + `</td>
+                                            <td>`+ data.ModeOfShipment + `</td>
+                                            <td>`+ data.ForwarderOrCarrierName + `</td>
+                                            <td>`+ data.ContainerTypeName + `</td>
+                                            <td>`+ data.ContainerSizeName + `</td>
+                                            <td>`+ data.HBLorHAWBNo + `</td>
+                                            <td>`+ data.BLorAWABDt + `</td>
+                                            <td>`+ data.LCNo + `</td>
+                                            <td>`+ data.InvoiceNo + `</td>
+                                            <td>`+ data.ValueInUSD + `</td>
+                                            <td>`+ data.GrWeightInKg + `</td>
+                                            <td>`+ data.Quantity + `</td>
+                                            <td>`+ data.ICUnitName + `</td>
+                                            <td>`+ data.ETD + `</td>
+                                            <td>`+ data.ETA + `</td>
+                                            <td>`+ data.BerthingDate + `</td>
+                                            <td>`+ data.CBM + `</td>
+                                            <td>`+ data.AssesmentStatus + `</td>
+                                            <td>`+ data.OTTDt + `</td>
+                                            <td>`+ data.PCD + `</td>
+                                            <td>`+ data.TentativeDeliveryDate + `</td>
+                                            <td>`+ data.Balance + `</td>
+                                            <td>`+ data.Remarks +`</td>
+                                    <td style="white-space: nowrap;">` + attachments + `</td>
+                                </tr>`);
+                });
+            }
+        });
+    }
+
+    function showModal(id) {
+        $("#detailsModal").modal("show");
+        $('#detailsModalTableBody').empty();
+        showDataOnModal(id);
+    }
+
+</script>

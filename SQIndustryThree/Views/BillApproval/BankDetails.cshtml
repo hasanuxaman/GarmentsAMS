@@ -1,0 +1,86 @@
+﻿
+@{
+    ViewBag.Title = "BankDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+<style type="text/css">
+    .modal-lg {
+        max-width: 80% !important;
+    }
+
+    .sweet-alert {
+        background-color: #DAF7A6;
+    }
+
+    .form-control, .btn {
+        border-radius: 0px;
+    }
+
+    #billmenu {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    #billSubmrnu li a {
+        color: white;
+    }
+
+    #billNavigaton {
+        background-color: #37474F;
+    }
+    /*#exceptionNavigaton{
+        padding:0px;
+        margin:0px;
+    }*/
+</style>
+
+<div class="container-fluid">
+    <h3 style="text-align: center;"><b>Bill Request Approval </b></h3>
+    <hr style="margin:0px" />
+    <div class="row">
+        <div id="billNavigaton" class="navbar navbar-default navbar-static-top">
+            <div id="billmenu">
+                <div class="navbar-collapse collapse">
+                    <ul id="billSubmrnu" class="nav navbar-nav">
+                        <li onclick="GetBankInfoList();"><a href="#">Bank Information</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="billApprovalDashboard" style="width:100%;overflow:scroll">
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#billsubmenu").find('li:nth-child(1)').addClass("active");
+    GetBankInfoList();
+    $('#billsubmenu > li > a').click(function () {
+        $('li').removeClass();
+        $(this).parent().addClass('active');
+        // $("#spmenuid").html($(this).html());
+    });
+
+    function GetBankInfoList() {
+        var urlpath = '@Url.Action("BankDetailsList", "BillApproval")';
+        $.ajax({
+            url: urlpath,
+            type: "Post",
+            data: { ViewName: '_bankDetailsPartial'},
+            async: true,
+            success: function (data) {
+                if (data) {
+                    console.log(data);
+                    $('#billApprovalDashboard').empty();
+                    $('#billApprovalDashboard').append(data);
+                    $('#BillRequestTable').DataTable();
+                }
+            }
+        });
+    }
+</script>

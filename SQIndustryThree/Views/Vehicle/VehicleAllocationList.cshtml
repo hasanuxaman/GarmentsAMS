@@ -1,0 +1,257 @@
+﻿
+@{
+    ViewBag.Title = "VehicleAllocation";
+}
+
+<div style="min-height:550px; margin:0px 25px 0px 25px;">
+    <a href="/Vehicle/VehicleAllocation" class="btn btn-primary" style="float:right;"><i class="fa fa-plus"></i> Add New</a>
+    <table width="100%" cellpadding="5" cellspacing="0" border="1" id="vhAllocationListTable" class="table table-striped">
+        <caption>All Allocated Vehicle List</caption>
+        <thead>
+            <tr>
+                <th>Trip Id</th>
+                <th>Request ID</th>
+                <th>Date Of Request</th>
+                <th>Vehicle No</th>
+                <th>Driver Name</th>
+                <th>Driver Phone</th>
+                <th>Vehicle Type</th>
+                <th>Start Point</th>
+                <th>Trip Type</th>
+                <th>Route</th>
+                <th>Trip Cost (BDT)</th>
+                <th>Details</th>
+                <th>Cost Adjustment</th>
+            </tr>
+        </thead>
+        <tbody id="vhAllocationListTableBody">
+        </tbody>
+    </table>
+    <div id="printableareaa">
+    <div class="modal" id="detailsModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    @*<h4 class="modal-title" style="text-align: center">Passengers Details</h4>*@
+                </div>
+                <section class="content-header">
+                    <h1>
+                        <label type="text" class="form-control" style="font-size:20px; color:cadetblue; margin-top:10px; text-align: center;">Allocated Passengers Information</label>
+                        <label type="text" class="form-control" style="font-size:20px; color:cadetblue; margin-top:10px; text-align: center;">Trip No:@Session["TripId"]</label>
+                    </h1>
+
+                </section>
+                <div id="detailsModalBody" class="modal-body">
+                    <table width="100%" cellpadding="5" cellspacing="0" border="1" id="detailsModalTable" class="table table-striped">
+                       @*<caption>Allocated Passengers Information</caption>
+                        <caption>@Session["TripId"]</caption>*@
+                        <thead>
+                            <tr>
+                                <th>Request Id</th>
+                                <th>Requestor</th>
+                                <th>Business Unit</th>
+                                <th>Travel Start Date</th>
+                                <th>Travel End Date</th>
+                                <th>Route</th>
+                                <th>No of User</th>
+                                <th>Allocated Cost</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailsModalTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="PrintModalq()">Print</button>
+                    <button type="button" id="modalCloseButton" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    <div class="modal" id="costAdjustmentModal">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" style="text-align: center">Trip Cost Adjustment</h4>
+                </div>
+                <div id="costAdjustmentModalBody" class="modal-body">
+                    <div class="row">
+                        <label class="col-sm-4">Adjustment Value :</label>
+                        <div class="col-sm-6">
+                            <input type="text" id="costAdjustmentValue" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" id="costAdjustmentModalFooter">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="myModall">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" style="text-align: center">Vehicle Request Preview</h4>
+                </div>
+                <div id="modalbody" class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="PrintModal()">Print</button>
+                    <button type="button" id="remove_button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+    function PrintModalq() {
+        var print_div = document.getElementById("printableareaa");
+        var print_area = window.open();
+        print_area.document.write("<style>table{border-collapse:collapse;}</style><img width='20' height='20' src='../../Images/logo.png' /><img style='width:80px;' src='../../Images/logo.png' />");
+        print_area.document.write("<h1 style='text-align:center'>Allocated Passengers Preview</h1>");
+        print_area.document.write(print_div.innerHTML);
+        print_area.document.close();
+        print_area.focus();
+        print_area.print();
+        print_area.close();
+    }
+    function PrintModal() {
+        var print_div = document.getElementById("printablearea");
+        var print_area = window.open();
+        print_area.document.write("<style>table{border-collapse:collapse;}</style><img width='20' height='20' src='../../Images/logo.png' /><img style='width:80px;' src='../../Images/logo.png' />");
+        print_area.document.write("<h1 style='text-align:center'>Vehicle Request Preview</h1>");
+        print_area.document.write(print_div.innerHTML);
+        print_area.document.close();
+        print_area.focus();
+        print_area.print();
+        print_area.close();
+    }
+    $(document).ready(function () {
+        loadVehicleAllocationListData();
+    });
+
+    function showModal(id) {
+        $("#detailsModal").modal("show");
+        $('#detailsModalTableBody').empty();
+        showDataOnModal(id);
+    }
+
+    function costAdjustmentModal(id) {
+        $("#costAdjustmentModal").modal("show");
+        $('#costAdjustmentModalFooter').empty();
+        $('#costAdjustmentModalFooter').append('<button type="button" onclick="saveChangeClickFunction(' + id +
+            ')" class="btn btn-success">Save Changes</button><button type="button" id="modalCloseButton" class="btn btn-danger" data-dismiss="modal">Close</button>');
+    }
+
+    function saveChangeClickFunction(id) {
+        var adVal = parseInt($('#costAdjustmentValue').val());
+        var urlPath = '@Url.Action("CostAdjustment", "Vehicle")';
+        $.ajax({
+            type: 'Post',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                TripId: id,
+                AdjustmentValue: adVal
+            },
+            success: function (data) {
+                $('#costAdjustmentValue').val('')
+                $("#costAdjustmentModal").modal('hide');
+                loadVehicleAllocationListData();
+            }
+        });
+    }
+
+    function loadVehicleAllocationListData() {
+        var urlPath = '@Url.Action("AllVehicleAllocationList", "Vehicle")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                table = $('#vhAllocationListTableBody');
+                table.empty();
+                datas.forEach(function (data) {
+                    table.append(`<tr>
+                                            <td>`+ data.VehicleAllocationMasterId + `</td>
+                                            <td>`+ data.VehicleRequestMasterId + `</td>
+                                            <td>`+ data.DateOfRequest + `</td>
+                                            <td>`+ data.VehicleNo + `</td>
+                                            <td>`+ data.DriverName + `</td>
+                                            <td>`+ data.DriverPhone + `</td>
+                                            <td>`+ data.VehicleType + `</td>
+                                            <td>`+ data.StartPoint + `</td>
+                                            <td>`+ data.TripType + `</td>
+                                            <td>`+ data.Route + `</td>
+                                            <td>`+ data.TripCost + `</td>
+                                            <td><a href="#" onclick="showModal(` + data.VehicleAllocationMasterId + `)" class="btn btn-primary">Details</a></td>
+                                            <td><a href="#" onclick="costAdjustmentModal(` + data.VehicleAllocationMasterId + `)" class="btn btn-primary"><i class="fa fa-edit"></i></a></td>
+                                        </tr>`);
+                });
+                $('#vhAllocationListTable').dataTable({ "order": [] });
+            }
+        });
+    }
+
+    function showDataOnModal(aid) {
+        var urlPath = '@Url.Action("AllVehicleAllocationPassengerList", "Vehicle")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            data: { id: aid },
+            success: function (datas) {
+                table = $('#detailsModalTableBody');
+                table.empty();
+                datas.forEach(function (data) {
+                    table.append(`<tr>
+                                            <td>`+ data.VehicleRequestMasterId + `</td>
+                                            <td>`+ data.UserInformation.UserInformationName + `</td>
+                                            <td>`+ data.BusinessUnitName + `</td>
+                                            <td>`+ data.TravelStratDate + `</td>
+                                            <td>`+ data.TravelEndDate + `</td>
+                                            <td>`+ data.Route + `</td>
+                                            <td>`+ data.NoofUser + `</td>
+                                            <td>`+ data.AllocatedCost + `</td>
+                                            <td><a href="#" onclick="VehicleRequestDetails(`+ data.VehicleRequestMasterId + `,0,'_modalRequestViewAllocation')" class="btn btn-primary">Details</a></td>
+                                        </tr>`);
+                });
+            }
+        });
+    }
+     function VehicleRequestDetails(masterID, status, viewName) {
+        debugger
+        var urlpath = '@Url.Action("VehicleRequestDetailsAllocation", "Vehicle")';
+        $.ajax({
+            data: { MasterID: masterID, ViewName: viewName, Status: status },
+            url: urlpath,
+            type: "POST",
+            async: true,
+            success: function (data) {
+                $("#modalbody").html("");
+                $("#modalbody").append(data);
+                $("#myModall").modal("show");
+            },
+            error: function () {
+                alert("Error");
+            }
+        });
+    }
+
+</script>

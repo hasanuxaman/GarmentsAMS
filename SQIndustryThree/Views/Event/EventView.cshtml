@@ -1,0 +1,260 @@
+﻿
+@{
+    ViewBag.Title = "EventView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    .modal-lg {
+        max-width: 80% !important;
+    }
+
+    .form-control, .btn {
+        border-radius: 0px;
+    }
+
+    #ioumenu {
+        margin: 0px;
+        padding: 0px;
+    }
+
+    #iousubmenu li a {
+        color: white;
+    }
+    /*#exceptionSubmrnu li:active{
+        color:white;
+        background-color:#0a0a22;
+
+    }*/
+    #iouNavigation {
+        background-color: #37474F;
+    }
+</style>
+
+<link href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css" rel="stylesheet">
+
+<div class="container-fluid">
+    <h3 style="text-align: center;">
+        <b>Event Registration System</b>
+    </h3>
+    <hr style="margin: 0px" />
+    <div class="row">
+        <div id="iouNavigation" class="navbar navbar-default navbar-static-top">
+            <div id="ioumenu">
+                <div>
+                    <ul id="iousubmenu" class="nav navbar-nav">
+                        <li><a href="#" onclick="GetWidgetPartial('_Registration')">Registration Form</a></li>
+                        <li><a href="#" onclick="GetAllEventRequest('_myEventRequestor')">My Request So Far</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="ioucreateDashboard">
+
+        </div>
+    </div>
+    <div class="modal" id="myModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" style="text-align: center">Event Request Preview</h4>
+                </div>
+                <div id="modalbody" class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="PrintModal()">Print</button>
+                    <button type="button" id="remove_button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.6.0/jszip-2.5.0/dt-1.11.3/b-2.0.1/b-html5-2.0.1/b-print-2.0.1/datatables.min.js"></script>
+
+<script type="text/javascript">
+    $("#iousubmenu").find('li:nth-child(1)').addClass("active");
+    GetWidgetPartial('_Registration');
+    $('#iousubmenu > li > a').click(function () {
+        $('li').removeClass();
+        $(this).parent().addClass('active');
+        // $("#spmenuid").html($(this).html());
+    });
+
+    var printTextTitile = 'Event'
+
+    $('#EventRequestTable').DataTable({
+        dom: 'Bfrti',
+        buttons: [
+            {
+                extend: 'print',
+                text: '<i class="fas fa-print"></i> Print',
+                titleAttr: 'PRINT',
+                title: printTextTitile,
+                exportOptions: {
+                    columns: ':not(:last-child)',
+                }
+            },
+            {
+                extend: 'pdf',
+                text: '<i class="fas fa-file-pdf"></i> PDF',
+                titleAttr: 'PDF',
+                title: printTextTitile,
+                exportOptions: {
+                    columns: ':not(:last-child)',
+                }
+            },
+            {
+                extend: 'excel',
+                text: '<i class="fas fa-file-excel"></i> Excel',
+                titleAttr: 'EXCEL',
+                title: printTextTitile,
+                exportOptions: {
+                    columns: ':not(:last-child)',
+                }
+            }
+        ],
+        "bPaginate": false
+    });
+
+    function GetWidgetPartial(variable) {
+        var urlpath = '@Url.Action("GetEventPartial", "Event")';
+            $.ajax({
+                url: urlpath,
+                type: "Post",
+                data: {viewName:variable},
+                async: true,
+                success: function(data) {
+                       if (data) {
+                           $('#ioucreateDashboard').empty();
+                           $('#ioucreateDashboard').append(data);
+                        }
+                    }
+                });
+    }
+
+    function GetAllEventRequest(variable) {
+        var urlpath = '@Url.Action("GetAllEventRequest", "Event")';
+            $.ajax({
+                url: urlpath,
+                type: "Post",
+                data: {viewName:variable},
+                async: true,
+                success: function(data) {
+                       if (data) {
+                           $('#ioucreateDashboard').empty();
+                           $('#ioucreateDashboard').append(data);
+                           $('#EventRequestTable').DataTable();
+                        }
+                    }
+                });
+    }
+
+    LoadBusinessUnit();
+
+    function LoadBusinessUnit() {
+        $('#sbu').css({ "border-color": "#d3d3d3" });
+        var urlpath = '@Url.Action("LoadBusinessUnit", "Admin")';
+        //$('#loader').show();
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "Post",
+            data: {},
+            async: true,
+            beforeSend: function () {
+                $('.overlay').show();
+            },
+            success: function (data) {
+                $('#sbu').empty();
+                //$("#visitorCompanySQ").empty();
+                $('#sbu').append("<option value=''>-- Select Business Unit --</option>");
+                if ($('#location').val() == '1') {
+                    $('#sbu').append("<option value='0'>Central</option>");
+                }
+                else {
+                    //$('#visitorCompanySQ').append("<option value=''>--Select Business Unit--</option>");
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].BusinessUnitId !== 6) {
+                            $("#sbu").append($("<option></option>").val(data[i].BusinessUnitId)
+                                .html(data[i].BusinessUnitName));
+                        }
+
+                        //$("#visitorCompanySQ").append($("<option></option>").val(data[i].BusinessUnitId)
+                        //    .html(data[i].BusinessUnitName));
+                    }
+
+                }
+            },
+            complete: function () {
+                $('.overlay').hide();
+            }
+        });
+    }
+
+    LoadEventList();
+    function LoadEventList() {
+        $('#event').css({ "border-color": "#d3d3d3" });
+        var urlpath = '@Url.Action("LoadEvents", "Event")';
+        //$('#loader').show();
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "Post",
+            data: {},
+            async: true,
+            beforeSend: function () {
+                $('.overlay').show();
+            },
+            success: function (data) {
+                $('#event').empty();
+                //$("#visitorCompanySQ").empty();
+                $('#event').append("<option value='0'>-- Select Event --</option>");
+                //$('#visitorCompanySQ').append("<option value=''>--Select Business Unit--</option>");
+                for (var i = 0; i < data.length; i++) {
+
+                    $("#event").append($("<option data-rules=\"" + data[i].Rules + "\"></option>").val(data[i].EventID)
+                            .html(data[i].EventName));
+                }
+            },
+            complete: function () {
+                $('.overlay').hide();
+            }
+        });
+    }
+
+    LoadLocation();
+
+    function LoadLocation() {
+        $('#location').css({ "border-color": "#d3d3d3" });
+        var urlpath = '@Url.Action("LoadLocations", "Event")';
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "Post",
+            data: {},
+            async: true,
+            success: function (data) {
+                $('#location').empty();
+                $('#location').append("<option value='0'>--Select Location --</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#location").append($("<option></option>").val(data[i].LocationId)
+                        .html(data[i].LocationName));
+                }
+
+                $('#location').on('change', function () {
+                    LoadBusinessUnit()
+                })
+            }
+        });
+    }
+
+
+
+</script>
+

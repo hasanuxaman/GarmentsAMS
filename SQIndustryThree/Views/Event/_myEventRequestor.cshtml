@@ -1,0 +1,56 @@
+﻿@model IEnumerable<SQIndustryThree.Models.Event.AllEventModel>
+<style>
+    #IourequestTable tr th, #IourequestTable tr td {
+        text-align: center;
+        padding: 5px;
+    }
+
+    button {
+        padding: 0;
+    }
+</style>
+<div class="box">
+    <h3 style="text-align:center">My Event Request List</h3>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="col-xs-12" id="personlocdiv">
+            <table id="EventRequestTable" class="table-bordered table table-striped">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Register ID</th>
+                        <th>Event</th>
+                        <th>Location</th>
+                        <th>Name</th>
+                        <th>Employee ID</th>
+                        <th>Designation</th>
+                        <th>Department</th>
+                        <th>BusinessUnitName</th>
+                        @*<th>Action</th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int count = 1;}
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.GeneratedID</td>
+                            <td>@item.EventName</td>
+                            <td>@item.LocationName</td>
+                            <td>@item.Name</td>
+                            <td>@item.EmployeeID</td>
+                            <td>@item.Designation</td>
+                            <td>@item.Department</td>
+                            <td>@item.BusinessUnitName</td>
+                        </tr>
+                        count++;
+
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <!-- /.box-body -->
+</div>

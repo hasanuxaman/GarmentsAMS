@@ -1,0 +1,239 @@
+﻿@{
+    ViewBag.Title = "Vehicle Admin Panel";
+}
+
+<link href="~/Assets/bower_components/select2/dist/css/select2.min.css" rel="stylesheet" />
+<style type="text/css">
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <h4 style="text-align: center;  padding: 5px ;background-color: #9bb07e; color: white;">Vehicle Approver Set</h4>
+            <div class="row">
+                <label class="col-sm-4">Select Business Unit <span style="color: red">*</span></label>
+                <div class="col-sm-6">
+                    <select id="businessUnitDD" onchange="businessUnitSelectFunction()" class="form-control">
+                    </select>
+                </div>
+            </div>
+            <br />
+            <table style="margin-left: auto; margin-right: auto;" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                        <th style="min-width: 90px;">Role</th>
+                        <th style="white-space: nowrap">Approver No</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="approverTableBody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>-</td>
+                        <td>
+                            <select id="userDD" class="form-control select2">
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" id="appDesignation" class="form-control" />
+                        </td>
+                        <td>
+                            <select id="appRole" class="form-control">
+                                <option value="COO">COO</option>
+                                <option value="SM">SM</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" id="appNo" class="form-control" />
+                        </td>
+                        <td><button onclick="addApprover()"><i style="color: black" class="fa fa-plus-circle"></i></button></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <br />
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script src="~/Assets/bower_components/select2/dist/js/select2.min.js"></script>
+<script type="text/javascript">
+    $('.select2').select2();
+    window.onload = function () {
+        loadBusinessUnits();
+        //loadApprovers();
+        //loadBuyers();
+    };
+
+    function loadBusinessUnits() {
+        var urlPath = '@Url.Action("BusinessUnits", "Admin")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                $('#businessUnitDD').empty();
+                $('#businessUnitDD').append(
+                    '<option value="0">--Select Business Unit--</option>'
+                );
+                datas.forEach(function (data) {
+                    $('#businessUnitDD').append(
+                        '<option value="' + data.BusinessUnitId + '">' + data.BusinessUnitName + '</option>'
+                    );
+                });
+            }
+        });
+    }
+
+    function loadUsers() {
+        var urlPath = '@Url.Action("GetAllUsers", "Admin")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                $('#userDD').empty();
+                $('#userDD').append(
+                    '<option value="0">--Select A User --</option>'
+                );
+                datas.forEach(function (data) {
+                    $('#userDD').append(
+                        '<option value="' + data.UserId + '">' + data.UserName + '</option>'
+                    );
+                });
+            }
+        });
+    }
+
+    function businessUnitSelectFunction() {
+        BusinessUnitWiseApprovers();
+        loadUsers();
+    }
+
+    function BusinessUnitWiseApprovers() {
+
+        var businessUnitId = $('#businessUnitDD').val();
+
+        var urlPath = '@Url.Action("VehicleBusinessUnitWiseApprovers", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                busninesssUnitId: businessUnitId
+            },
+            success: function (datas) {
+                $('#approverTableBody').empty();
+                $('#approverTableBody').append(
+                    `<tr><td>1</td>
+                        <td>Head Of Dept.</td>
+                        <td>HOD</td>
+                        <td>HOD</td>
+                        <td>1</td>
+                        <td><button onClick="javascript:void(0)" disabled><i style="color: black" class="fa fa-trash"></i></button></td></tr>`
+                );
+                var i = 1;
+                datas.forEach(function (data) {
+                    $('#approverTableBody').append(
+                        `<tr><td>`+ (++i) +`</td>
+                        <td>`+ data.UserName +`</td>
+                        <td>`+ data.Designation +`</td>
+                        <td>`+ data.Role +`</td>
+                        <td>`+ data.ApproverSequence +`</td>
+                        <td><button onClick="removeApprover(`+ data.VehicleApproverid + `)" ><i style="color: black" class="fa fa-trash"></i></button></td></tr>`
+                    );
+                });
+            }
+        });
+    }
+
+    function removeApprover(id) {
+        var urlPath = '@Url.Action("DeleteBusinessUnitWiseApprover", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    BusinessUnitWiseApprovers();
+                }
+            }
+        });
+    }
+
+    function addApprover() {
+
+        var businessUnit = $('#businessUnitDD').val();
+        var userId = $("#userDD").val();
+        var designation = $("#appDesignation").val();
+        var role = $("#appRole").val();
+        var approverNo = $("#appNo").val();
+
+        if (userId <= 0) {
+            swal({
+                title: "",
+                text: "You must select a valid user.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        } else if (businessUnit <= 0){
+            swal({
+                title: "",
+                text: "You must select a Business Unit.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        } else if (designation == '') {
+            swal({
+                title: "",
+                text: "Enter designation.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        } else if (approverNo <= 1) {
+            swal({
+                title: "",
+                text: "Enter valid approver no.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        }
+
+        var urlPath = '@Url.Action("AddVehicleApprover", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                userId: userId,
+                designation: designation,
+                role: role,
+                approverNo: approverNo,
+                businessUnitId: businessUnit
+            },
+            success: function (data) {
+                if (data.isSuccess) {
+                    BusinessUnitWiseApprovers();
+                }
+            }
+        });
+    }
+
+</script>

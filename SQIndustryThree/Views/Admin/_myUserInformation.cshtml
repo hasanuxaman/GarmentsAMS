@@ -1,0 +1,56 @@
+﻿@model IEnumerable<SQIndustryThree.Models.UserInformationModel>
+<style>
+    #IourequestTable tr th, #IourequestTable tr td {
+        text-align: center;
+        padding: 5px;
+    }
+
+    button {
+        padding: 0;
+    }
+</style>
+<div class="box">
+    <h3 style="text-align:center">User Information List</h3>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="col-xs-12" id="personlocdiv" style="overflow:scroll;">
+            <table id="UserInformationTable" class="table-bordered table table-striped" width="100%" style="overflow:scroll">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>User Id #</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Unit</th>
+                        <th>Designation</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int count = 1;}
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>@count</td>
+                        <td>@item.UserId</td>
+                        <td>@item.UserName</td>
+                        <td>@item.UserEmail</td>
+                        <td>@item.UserPhone</td>
+                        <td>@item.BusinessUnitName</td>
+                        <td>@item.DesignationName</td>
+                        <input id="update_primarykey" type="hidden" value="@item.UserId" />
+                        <td> <button type="button" id="update_capex" onclick="updateUserInfo(@item.UserId)" class="btn  btn-block btn-danger">Edit </button></td>
+                        @*<td> <button type="button" class="btn  btn-block btn-primary btn-sm" data-toggle="modal" data-target="#myModal" onclick="CourierRequestDetails(@item.UserId,0,'_modalCourierRequestView')" data-idkey="@item.UserId">Edit(@item.UserId)</button></td>*@
+
+                    </tr>
+                        count++;
+
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <!-- /.box-body -->
+</div>

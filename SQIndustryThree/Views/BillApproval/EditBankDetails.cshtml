@@ -1,0 +1,164 @@
+﻿
+@{
+    ViewBag.Title = "Edit Bank Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+<style type="text/css">
+    .center-custom {
+        margin: auto;
+        width: 50%;
+    }
+</style>
+<div class="container-fluid">
+    <h3 style="text-align: center;"><b>Edit Bank Details</b></h3>
+    <hr style="margin:0px" />
+    <div class="panel panel-primary center-custom">
+        <div class="panel-heading">Bank Details</div>
+        <div class="panel-body">
+            <label>Supplier: <span style="color:red">*</span></label>
+            <select id="supplier" class="form-control">
+                <option value="0">--Select Supplier--</option>
+            </select>
+
+            <label>Account Name: <span style="color:red">*</span></label>
+            <input id="accountName" class="form-control" value="" />
+            
+            <label>Account Number: <span style="color:red">*</span></label>
+            <input id="accountNumber" class="form-control" value="" />
+
+            <label>Bank Name: <span style="color:red">*</span></label>
+            <input id="bankName" class="form-control" value="" />
+
+            <label>IFSC/SWIFT Code: <span style="color:red">*</span></label>
+            <input id="iFSCorSWIFTCode" class="form-control" value="" />
+
+            <label>Account Type: <span style="color:red">*</span></label>
+            <input id="accountType" class="form-control" value="" />
+            
+            <label>Branch: <span style="color:red">*</span></label>
+            <input id="branch" class="form-control" value="" />
+        </div>
+        <div class="panel-footer text-right">
+            <button class="btn btn-info btn-sm" id="editBankDetails" onclick="EditBankDetails()">Edit</button>
+        </div>
+    </div>
+</div>
+@*@Scripts.Render("~/bundles/jquery")*@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        LoadSuppliers();
+        LoadData();
+    });
+
+    function LoadSuppliers() {
+        $('#supplier').css({ "border-color": "#d3d3d3" });
+        var urlpath = '@Url.Action("AllSuppliersForBankDetails", "BillApproval")';
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "GET",
+            async: false,
+            success: function (data) {
+                $('#supplier').empty();
+                $('#supplier').append("<option value='0'>--Select Supplier--</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#supplier").append($("<option></option>").val(data[i].Value)
+                        .html(data[i].Text));
+                }
+            }
+        });
+    }
+
+    function LoadData() {
+        console.log('Data Call deya hoiche!     ' + parseInt('@ViewBag.BandDetailsId'));
+        var urlpath = '@Url.Action("BandDetailsForEdit", "BillApproval")';
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "GET",
+            async: false,
+            data: {
+                id: parseInt('@ViewBag.BandDetailsId')
+            },
+            success: function (data) {
+                $('#accountName').val(data.BeneficiaryName);
+                $('#accountNumber').val(data.AccountNumber);
+                $('#bankName').val(data.BankName);
+                $('#iFSCorSWIFTCode').val(data.IFSCorSWIFTCode);
+                $('#accountType').val(data.AccountType);
+                $('#branch').val(data.Branch);
+                $('#supplier').val(data.SupplierId);
+            }
+        });
+    }
+
+    function EditBankDetails() {
+        let isValid = true;
+        if ($('#accountName').val() == "") {
+            isValid = false;
+        }
+        else if (!($('#supplier').val() > 0)) {
+            isValid = false;
+        }
+        else if ($('#accountNumber').val() == "") {
+            isValid = false;
+        }
+        //else if ($('#shortCode').val() == "") {
+        //    isValid = false;
+        //}
+        else if ($('#bankName').val() == "") {
+            isValid = false;
+        }
+        //else if ($('#BIC').val() == "") {
+        //    isValid = false;
+        //}
+        //else if ($('#swift').val() == "") {
+        //    isValid = false;
+        //}
+        else if ($('#branch').val() == "") {
+            isValid = false;
+        }
+
+        if (isValid) {
+            var urlPath = '@Url.Action("EditBankDetailsEntry", "BillApproval")';
+            $.ajax({
+                type: 'Post',
+                url: urlPath,
+                dataType: 'json',
+                data: {
+                    BankDetailsId: parseInt('@ViewBag.BandDetailsId'),
+                    BeneficiaryName: $('#accountName').val(),
+                    AccountNumber: $('#accountNumber').val(),
+                    BankName: $('#bankName').val(),
+                    IFSCorSWIFTCode: $('#iFSCorSWIFTCode').val(),
+                    AccountType: $('#accountType').val(),
+                    Branch: $('#branch').val(),
+                    SupplierId: $('#supplier').val()
+                },
+                success: function (data) {
+                    swal({
+                        title: "Success!",
+                        text: "Bank Details Edited",
+                        type: "success",
+                        button: "OK"
+                    });
+                }
+            });
+        }
+        else {
+            swal({
+                title: "Warning!",
+                text: "Fill the required field first",
+                type: "warning",
+                button: "OK"
+            });
+        }
+    }
+</script>
+
+

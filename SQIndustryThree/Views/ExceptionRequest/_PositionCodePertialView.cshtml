@@ -1,0 +1,69 @@
+﻿@model IEnumerable<SQIndustryThree.Models.PositionCodeDetails>
+@{
+    ViewBag.Title = "_courierTypePertialView";
+}
+<style>
+    th {
+        text-align: center;
+    }
+
+    td {
+        text-align: center;
+    }
+</style>
+<div class="box">
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="col-xs-12" id="personlocdiv">
+            <table id="courierTypeshowTable" class="table-bordered table table-responsive">
+                <thead>
+                    <tr>
+                        <th>SeLect</th>
+                        <th>SL</th>
+                        <th>Position Code</th>
+                        <th>Position Name</th>
+                        <th style="display:none;"></th>
+                        <th>Department Name</th>
+                        <th style="display:none;"></th>
+                        <th>Designation Name</th>
+                        <th style="display:none;"></th>
+                        <th>Staff Category</th>
+                        <th>Budgeted Manpower</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int count = 1;}
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td><input type="checkbox" id="` + 'chkId' + i + `" class="custom-checkbox" /></td>
+                        <td>@count</td>
+                        <td>@item.PWManpowerId</td>
+                        <td>@item.PositionName</td>
+                        <td style="display:none;">@item.DepartmentId</td>
+                        <td>@item.DepartmentName</td>
+                        <td style="display:none;">@item.DesignationId</td>
+                        <td>@item.DesignationName</td>
+                        <td style="display:none;">@item.StaffCategoryId</td>
+                        <td>@item.StaffCategoryName</td>
+                        <td>@item.BudgetedHead</td>
+                        <input id="update_primarykey" type="hidden" value="@item.BudgetedHead" />
+                        @*<td> <button type="button" id="update_capex" onclick="updateCourierType(@item.BudgetedHead)" class="btn  btn-block btn-danger">Update </button></td>*@
+
+                    </tr>
+                        count++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- /.box-body -->
+</div>
+<!-- /.box -->
+<script src="~/Assets/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/Assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script>
+    $(function () {
+        $("#pending_Capex").html("("+@Model.Count()+")");
+    });
+</script>

@@ -1,0 +1,119 @@
+﻿<script src="~/scripts/jquery-1.10.2.js"></script>
+
+<!-- #region datatables files -->
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<!-- #endregion -->
+<style>
+    #total_div {
+        margin-left: 20px;
+    }
+
+    .lable_table {
+        width: 20%;
+        font-weight: bold;
+    }
+
+    #visitorTable td, #visitorTable th {
+        text-align: center;
+    }
+
+        #visitorTable td input[type=text] {
+            all: initial;
+            all: unset;
+        }
+
+    input[type=text], input[type=button], select {
+        height: 30px;
+    }
+
+    #visitorinputtable {
+    }
+
+        #visitorinputtable td {
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+
+    #loading-img {
+        background: url('../../Images/ajax-loader.gif') center center no-repeat;
+        height: 100%;
+        z-index: 20;
+    }
+
+    .overlay {
+        background: #463e3e;
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        opacity: 0.5;
+    }
+
+    .table > thead > tr > th {
+        vertical-align: top;
+        border-bottom: 2px solid #ddd;
+    }
+</style>
+<div id="total_div" class="container-fluid">
+    <div class="row">
+        <table style="text-align:left" class="table table-responsive table-bordered">
+            <tr>
+                <td class="lable_table">Enter Business Unit Name : </td>
+                <td><input type="text" id="department_name" class="form-control" placeholder="Enter  Business Unit Name" /></td>
+            </tr>
+        </table>
+    </div>
+    <button id="saveDesignation" class="btn btn-primary">SAVE</button>
+</div>
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+
+
+    function LoadDesignation() {
+        var urlpath = '@Url.Action("LoadDesignation", "Admin")';
+        $.ajax({
+            url: urlpath,
+            dataType: 'json',
+            type: "Post",
+            data: {},
+            async: true,
+            success: function (data) {
+                $('#designation_select').empty();
+                $('#designation_select').append("<option value='0'>--Select Designation Unit--</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#designation_select").append($("<option></option>").val(data[i].DesignationId)
+                        .html(data[i].DesignationName));
+                }
+            }
+        });
+    }
+
+    $('#saveDesignation').click(function () {
+        var department = $('#department_name').val();
+        var urlpath = '@Url.Action("CreateBusinessUnit", "Admin")';
+         $.ajax({
+                url: urlpath,
+                type: "Post",
+             data: { DepartmentName: department},
+                    async: true,
+                    success: function(result) {
+                        if (result) {
+                        swal({
+                            title: 'Business Unit Added Successfully',
+                                        type: 'success',
+                                        closeOnCancel: true
+                                    },
+                            function () {
+                                 window.location.href = '@Url.Action("DashboardAdmin", "Admin")';
+                                    });
+                    }
+                    }
+                });
+        });
+
+
+</script>
+

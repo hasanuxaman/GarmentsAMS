@@ -1,0 +1,43 @@
+﻿@model IEnumerable<SQIndustryThree.Models.UserInformationModel>
+<style>
+    #IourequestTable tr th, #IourequestTable tr td {
+        text-align: center;
+        padding: 5px;
+    }
+
+    button {
+        padding: 0;
+    }
+</style>
+<div class="box">
+    <h3 style="text-align:center">My Business Unit List</h3>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="col-xs-12" id="personlocdiv" style="overflow:scroll;">
+            <table id="VisitorRequestTable" class="table-bordered table table-striped" width="100%" style="overflow:scroll">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Business Unit Id </th>
+                        <th>Business Unit Name</th>
+                      <tr>
+                </thead>
+                <tbody>
+                    @{ int count = 1;}
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>@count</td>
+                        <td>@item.BusinessUnitId</td>
+                        <td>@item.BusinessUnitName</td>
+                      </tr>
+                        count++;
+
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <!-- /.box-body -->
+</div>

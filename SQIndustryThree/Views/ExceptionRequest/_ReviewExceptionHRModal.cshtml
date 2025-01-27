@@ -1,0 +1,289 @@
+﻿@model SQIndustryThree.Models.ExceptionRequestHRMaster
+<style>
+    th {
+        text-align: left;
+    }
+
+    td {
+        text-align: left;
+    }
+
+    #genaralInfodt tr th, #genaralInfodt tr td, #approverlist tr td, #approverlist tr th {
+        text-align: center;
+    }
+</style>
+<div>
+    <div id="printablearea">
+        @if (Model.RivisionNo > 0)
+        {
+            <p style="color:red;text-align:center;font-weight:bold">Revised Exception  No:  @Model.RivisionNo</p>
+        }
+        <div>
+            <span style="float:left;font-weight:bold;font-size:20px">@Model.BusinessUnitName</span>
+            <span style="float:right;font-weight:bold;font-size:20px">Exception Request No: @Model.ExpReqMastertId</span>
+        </div>
+        @if (Model.ApproverList != null)
+        {
+            <table border="1" width="100%" id="approverlist">
+                <caption>Approver List</caption>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Approver Name</th>
+                        <th>Approver Designation</th>
+                        <th>Approver Role</th>
+                        <th>Update Date</th>
+                        <th>Status</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ApproverList)
+                    {
+                        <tr>
+                            <td>@item.ApproverNo</td>
+                            <td>@item.UserName</td>
+                            <td>@item.DesignationName</td>
+                            <td>@item.ApproverStatusName</td>
+                            <td>
+                                @if (@item.UpdateDate != null)
+                                {@DateTime.Parse(@item.UpdateDate).ToString("dd MMM yyyy")}
+                            </td>
+                            @{
+                                if (item.IsApprove == 3)
+                                {
+                                    <td style="color:red">Pending</td>
+                                }
+                                else if (item.IsApprove == 1)
+                                {
+                                    if (item.ApproverStatus == 3)
+                                    {
+                                        <td style="color:green">Disbursed</td>
+                                    }
+                                    else
+                                    {
+                                        <td style="color:green">Approved</td>
+                                    }
+                                }
+                                else if (Model.IsApproved == 4)
+                                {
+                                    <td style="color:red">Dispatched</td>
+                                }
+                                else if (item.IsApprove == 2)
+                                {
+                                    <td style="color:red">Rejected</td>
+                                }
+                                else
+                                {
+                                    <td style="color:darkblue">Not Sent</td>
+                                }
+                            }
+                            <td>@item.Comments</td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        }
+        <div class="row">
+            <div class="col-md-6">
+                <table border="1" width="100%">
+                    <caption>Exception Request</caption>
+                    <tr>
+                        <th width="30%">Create Date</th>
+                        <td width="70%">@DateTime.Parse(Model.CreateDate).ToString("dd MMM yyyy")</td>
+                    </tr>
+                    <tr>
+                        <th>Exception Type  </th>
+                        <td>@Model.ExceptionTypeName</td>
+                    </tr>
+                    <tr>
+                        <th>Exception Reason</th>
+                        <td>@Model.ExceptionReasonName</td>
+                    </tr>
+                    <tr>
+                        <th>Location Name</th>
+                        <td>@Model.LocationName</td>
+                    </tr>
+                    <tr>
+                        <th>Business Unit Name</th>
+                        <td>@Model.BusinessUnitName</td>
+                    </tr>
+                    <tr>
+                        <th>Month</th>
+                        <td>@Model.Month</td>
+                    </tr>
+                    <tr>
+                        <th>Comment</th>
+                        <td>@Model.Comment</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+        <table border="1" width="100%" id="genaralInfodt">
+            @{float countFoba = 0;}
+            @{float countFob = 0;}
+            <caption>Additional ManPower Details</caption>
+            <thead>
+                <tr>
+                    <th>Position Code</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Staff Category</th>
+                    <th>Current Budgeted Manpower</th>
+                    <th>Number of Additional Requirement</th>
+                    <th>To Budgeted Manpower</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.ExceptionDetailsList)
+                {
+                    <tr>
+                        <td>@item.PositionCode</td>
+                        <td>@item.DepartmentName</td>
+                        <td>@item.DesignationName</td>
+                        <td>@item.StaffCategoryName</td>
+                        <td>@item.Current_Bdg_Man</td>
+                        <td>@item.No_Of_Add_Req</td>
+                        <td>@item.To_Bdg_MAn</td>
+                        <td>@item.Remarks</td>
+                    </tr>
+                    countFoba = countFoba + @item.No_Of_Add_Req;
+                    countFob = countFob + @item.To_Bdg_MAn;
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="5">Total </th>
+                    <th>@countFoba.ToString()</th>
+                    <th>@countFob.ToString()</th>
+                </tr>
+            </tfoot>
+        </table>
+        <table border="1" width="100%" id="genaralInfodtd">
+            @{float countFobd = 0;}
+            <caption>Additional ManPower Extend Details</caption>
+            <thead>
+                <tr>
+                    <th>Position Code</th>
+                    <th>Unit</th>
+                    <th>Section</th>
+                    <th>Sub Section</th>
+                    <th>Designation</th>
+                    <th>Category</th>
+                    <th>Additional Manpower</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.ExceptionDetailsExtendList)
+                {
+                    <tr>
+                        <td>@item.PositionCode</td>
+                        <td>@item.UnitName</td>
+                        <td>@item.SectionName</td>
+                        <td>@item.SubSectionName</td>
+                        <td>@item.DesignationName</td>
+                        <td>@item.CategoryName</td>
+                        <td>@item.AdditionalManpower</td>
+                    </tr>
+                    countFobd = countFobd + @item.AdditionalManpower;
+                }
+            </tbody>
+            @*<tfoot>
+                    <tr>
+                        <th colspan="6">Total </th>
+                        <th>@countFobd.ToString("C")</th>
+                    </tr>
+                </tfoot>*@
+        </table>
+    </div>
+
+
+
+    @if (Model.IsApproved == 0)
+    {
+        <div style="text-align:center">
+            <br />
+            <button type="button" style="width:30%" class="btn btn-primary btn-sm" onclick="SubmitToDatabase()">Submit</button>
+        </div>
+
+    }
+    else
+    {
+        <div>
+            <br />
+            <table width="80%" align="center">
+                <tr>
+                    <td>
+                        <button value="Comments" onclick="showComments()" class="btn btn-sm btn-primary">Comments</button>
+                    </td>
+                    <td style="padding:5px">
+                        <select id="reviewComment" class="approvalColumn form-control">
+                            @if (Model.ApproverList != null)
+                            {
+                                foreach (var app in Model.ApproverList)
+                                {
+                                    if (app.IsApprove != 0)
+                                    {
+                                        <option value="@app.UserID">@app.UserName</option>
+                                    }
+
+                                }
+                            }
+
+                        </select>
+                    </td>
+                    <td style="padding:5px">
+                        <input type="text" id="reviewMessage" class="approvalColumn form-control" rows="3" style="resize:none" />
+                    </td>
+                    <td>
+                        <button style="text-align:center;align-content:center" class="btn btn-info btn-sm" onclick="ReviewComment(@Model.ExpReqMastertId)">Send Review</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        @*<button value="Comments" onclick="showComments()" class="btn btn-sm btn-primary">Comments</button>*@
+        <div id="comments_section" class="row" style="display:none">
+            <div class="col-md-9" style="overflow-wrap:inherit; overflow-y: auto;height:200px;">
+                <p>Comment Section</p>
+                @if (Model.ExceptionComments != null)
+                {
+                    foreach (var app in Model.ExceptionComments)
+                    {
+                        <hr style="margin:unset;padding:unset;" />
+                        <p style="margin:unset;padding:unset" class="media-heading user_name"><strong style="color:blue">@app.ReviewerByName</strong>  To <strong>@app.ReviewerToName</strong></p>
+                        <p style="margin:unset;padding:unset">@app.UpdatedBY.ToString("MM/dd/yyyy hh:mm tt")</p>
+                        <p style="margin:unset;padding:unset">@app.ReviewMessage</p>
+                    }
+                }
+            </div>
+            @*<div class="col-md-3">
+                    <label for="reviewComment">Select Reviwer</label>
+                    <select id="reviewComment" class="form-control">
+                        @if (Model.ApproverList != null)
+                        {
+                            foreach (var app in Model.ApproverList)
+                            {
+                                if (app.IsApproved != 0)
+                                {
+                                    <option value="@app.ApproverUserId">@app.ApproverName</option>
+                                }
+
+                            }
+                        }
+
+                    </select>
+                    <br />
+                    <textarea type="text" id="reviewMessage" class="form-control" rows="3" style="resize:none" />
+                    <br />
+                    <button style="text-align:center;align-content:center" class="btn btn-success btn-sm" onclick="ReviewComment(@Model.ExceptionMasterId)">Send Comment</button>
+                </div>*@
+        </div>
+    }
+</div>

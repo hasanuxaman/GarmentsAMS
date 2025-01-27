@@ -1,0 +1,702 @@
+﻿
+@{
+
+}
+
+<link href="~/Assets/bower_components/select2/dist/css/select2.min.css" rel="stylesheet" />
+<style type="text/css">
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <label class="col-sm-2">Select User <span style="color: red">*</span></label>
+        <div class="col-sm-4">
+            <select id="user" onchange="userIdSelectFunction()" class="form-control select2">
+            </select>
+        </div>
+        <div class="col-sm-6">
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <h4 style="text-align: center;  padding: 5px ;background-color: #9bb07e; color: white;">User wise business unit</h4>
+            <table style="margin-left: auto; margin-right: auto; max-width: 400px;" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Busniess Unit</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="businessUnitTableBody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>-</td>
+                        <td>
+                            <select id="businessUnitDD" class="form-control">
+                            </select>
+                        </td>
+                        <td><button onclick="addBusinessUnit()"><i style="color: black" class="fa fa-plus-circle"></i></button></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <br />
+            @*------------------------------- User wise location ----------------------------------*@
+            <h4 style="text-align: center;  padding: 5px ;background-color: #9bb07e; color: white;">User wise location</h4>
+            <table style="margin-left: auto; margin-right: auto; max-width: 400px;" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Location</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="locationTableBody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>-</td>
+                        <td>
+                            <select id="locationDD" class="form-control">
+                            </select>
+                        </td>
+                        <td><button onclick="addLocation()"><i style="color: black" class="fa fa-plus-circle"></i></button></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <br />
+            @*------------------------------- User wise Category ----------------------------------*@
+            <h4 style="text-align: center;  padding: 5px ;background-color: #9bb07e; color: white;">User wise category</h4>
+            <table style="margin-left: auto; margin-right: auto; max-width: 400px;" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Category</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="categoryTableBody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>-</td>
+                        <td>
+                            <select id="categoryDD" class="form-control">
+                            </select>
+                        </td>
+                        <td><button onclick="addCategory()"><i style="color: black" class="fa fa-plus-circle"></i></button></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <br />
+        </div>
+        <div class="col-md-6">
+            @*------------------------------- Category wise asset ----------------------------------*@
+            <h4 style="text-align: center;  padding: 5px ;background-color: #9bb07e; color: white;">Category wise asset</h4>
+            <div class="row">
+                <label class="col-sm-4">Select category <span style="color: red">*</span></label>
+                <div class="col-sm-6">
+                    <select id="categoryDD2" onchange="categorySelectFunction()" class="form-control">
+                    </select>
+                </div>
+            </div>
+            <br />
+            <table style="margin-left: auto; margin-right: auto; max-width: 600px;" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="assetTableBody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>-</td>
+                        <td colspan="3">
+                            <select id="assetDD" class="form-control">
+                            </select>
+                        </td>
+                        <td><button onclick="addAsset()"><i style="color: black" class="fa fa-plus-circle"></i></button></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <br />
+            @*------------------------------- Business unit and Category wise approver ----------------------------------*@
+            <h4 style="text-align: center;  padding: 5px ;background-color: #9bb07e; color: white;">Business unit and Category wise approver</h4>
+            <div class="row">
+                <label class="col-sm-4">Select business unit <span style="color: red">*</span></label>
+                <div class="col-sm-6">
+                    <select id="businessUnitDD2" onchange="showApprovers()" class="form-control">
+                    </select>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <label class="col-sm-4">Select category <span style="color: red">*</span></label>
+                <div class="col-sm-6">
+                    <select id="categoryDD3" onchange="showApprovers()" class="form-control">
+                    </select>
+                </div>
+            </div>
+            <br />
+            <table style="margin-left: auto; margin-right: auto; max-width: 600px;" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                        <th>Approver No.</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="approverTableBody">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>-</td>
+                        <td colspan="2">
+                            <select id="approverDD" class="form-control select2">
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" id="appNoInput" class="form-control"/>
+                        </td>
+                        <td><button onclick="addApprover()"><i style="color: black" class="fa fa-plus-circle"></i></button></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+<script src="~/Assets/bower_components/select2/dist/js/select2.min.js"></script>
+<script type="text/javascript">
+    $('.select2').select2();
+
+    window.onload = function () {
+        loadUsers();
+        loadBusinessUnits();
+        loadLocations();
+        loadCategory();
+        loadAssets();
+    };
+
+    function loadUsers() {
+        var urlPath = '@Url.Action("GetAllUsers", "Admin")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                $('#user').empty();
+                $('#approverDD').empty();
+                $('#user').append(
+                    '<option value="0">--Select A User --</option>'
+                );
+                datas.forEach(function (data) {
+                    $('#user').append(
+                        '<option value="' + data.UserId + '">' + data.UserName + '</option>'
+                    );
+                    $('#approverDD').append(
+                        '<option value="' + data.UserId + '">' + data.UserName + '</option>'
+                    );
+                });
+            }
+        });
+    }
+
+    function loadBusinessUnits() {
+        var urlPath = '@Url.Action("BusinessUnitsDD", "Admin")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                $('#businessUnitDD').empty();
+                $('#businessUnitDD2').empty();
+                $('#businessUnitDD2').append(
+                    '<option value="0">- Select business unit -</option>'
+                );
+                datas.forEach(function (data) {
+                    $('#businessUnitDD').append(
+                        '<option value="' + data.BusinessUnitId + '">' + data.BusinessUnitName + '</option>'
+                    );
+                    $('#businessUnitDD2').append(
+                        '<option value="' + data.BusinessUnitId + '">' + data.BusinessUnitName + '</option>'
+                    );
+                });
+            }
+        });
+    }
+
+    function loadLocations() {
+        var urlPath = '@Url.Action("LocationsDD", "Admin")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                $('#locationDD').empty();
+                datas.forEach(function (data) {
+                    $('#locationDD').append(
+                        '<option value="' + data.LocationId + '">' + data.LocationName + '</option>'
+                    );
+                });
+            }
+        });
+    }
+
+    function loadCategory() {
+        var urlPath = '@Url.Action("CategoriesDD", "Admin")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                $('#categoryDD').empty();
+                $('#categoryDD2').empty();
+                $('#categoryDD3').empty();
+                $('#categoryDD2').append(
+                    '<option value="0">- Select a category -</option>'
+                );
+                $('#categoryDD3').append(
+                    '<option value="0">- Select a category -</option>'
+                );
+                datas.forEach(function (data) {
+                    $('#categoryDD').append(
+                        '<option value="' + data.CapexCatagoryID + '">' + data.CapexCatagoryName + '</option>'
+                    );
+                    $('#categoryDD2').append(
+                        '<option value="' + data.CapexCatagoryID + '">' + data.CapexCatagoryName + '</option>'
+                    );
+                    $('#categoryDD3').append(
+                        '<option value="' + data.CapexCatagoryID + '">' + data.CapexCatagoryName + '</option>'
+                    );
+                });
+            }
+        });
+    }
+
+    function loadAssets() {
+        var urlPath = '@Url.Action("CapexAssetsDD", "Admin")';
+        $.ajax({
+            type: 'GET',
+            url: urlPath,
+            dataType: 'json',
+            success: function (datas) {
+                $('#assetDD').empty();
+                datas.forEach(function (data) {
+                    $('#assetDD').append(
+                        '<option value="' + data.AssetCatagoryId + '">' + data.AssetCatagoryName + '</option>'
+                    );
+                });
+            }
+        });
+    }
+
+    function userIdSelectFunction() {
+        UserWiseBusniessUnits();
+        UserWiseLocations();
+        UserWiseCategories();
+    }
+
+    function UserWiseBusniessUnits() {
+
+        var userId = $('#user').val();
+
+        var urlPath = '@Url.Action("CapexUserWiseBusinessUnits", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: userId
+            },
+            success: function (datas) {
+                $('#businessUnitTableBody').empty();
+                var i = 0;
+                datas.forEach(function (data) {
+                    $('#businessUnitTableBody').append(
+                        `<tr><td>` + (++i) + `</td>
+                        <td>`+ data.BusinessUnitName + `</td>
+                        <td><button onClick="removeBusinessUnit(`+ data.BusinessUnitId + `)" ><i style="color: black" class="fa fa-trash"></i></button></td></tr>`
+                    );
+                });
+            }
+        });
+    }
+
+    function removeBusinessUnit(id) {
+        var urlPath = '@Url.Action("DeleteCapexUserWiseBusienssUnit", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseBusniessUnits();
+                }
+            }
+        });
+    }
+
+    function addBusinessUnit() {
+
+        var userId = $('#user').val();
+        var businessUnitId = $('#businessUnitDD').val();
+
+        if (userId <= 0) {
+            swal({
+                title: "",
+                text: "You must select a valid user.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        }
+
+        var urlPath = '@Url.Action("AddCapexUserWiseBusienssUnit", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                UserId: userId,
+                BusinessUnitId: businessUnitId
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseBusniessUnits();
+                }
+            }
+        });
+    }
+
+    function UserWiseLocations() {
+
+        var userId = $('#user').val();
+
+        var urlPath = '@Url.Action("CapexUserWiseLocation", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: userId
+            },
+            success: function (datas) {
+                $('#locationTableBody').empty();
+                var i = 0;
+                datas.forEach(function (data) {
+                    $('#locationTableBody').append(
+                        `<tr><td>` + (++i) + `</td>
+                        <td>`+ data.LocationName + `</td>
+                        <td><button onClick="removeLocation(`+ data.LocationId + `)" ><i style="color: black" class="fa fa-trash"></i></button></td></tr>`
+                    );
+                });
+            }
+        });
+    }
+
+    function removeLocation(id) {
+        var urlPath = '@Url.Action("DeleteCapexUserWiseLcoation", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseLocations();
+                }
+            }
+        });
+    }
+
+    function addLocation() {
+
+        var userId = $('#user').val();
+        var locationId = $('#locationDD').val();
+
+        if (userId <= 0) {
+            swal({
+                title: "",
+                text: "You must select a valid user.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        }
+
+        var urlPath = '@Url.Action("AddCapexUserWiseLocation", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                UserId: userId,
+                LocationId: locationId
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseLocations();
+                }
+            }
+        });
+    }
+
+    function UserWiseCategories() {
+
+        var userId = $('#user').val();
+
+        var urlPath = '@Url.Action("CapexUserWiseCategory", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: userId
+            },
+            success: function (datas) {
+                $('#categoryTableBody').empty();
+                var i = 0;
+                datas.forEach(function (data) {
+                    $('#categoryTableBody').append(
+                        `<tr><td>` + (++i) + `</td>
+                        <td>`+ data.CapexCatagoryName + `</td>
+                        <td><button onClick="removeCategory(`+ data.CapexCatagoryID + `)" ><i style="color: black" class="fa fa-trash"></i></button></td></tr>`
+                    );
+                });
+            }
+        });
+    }
+
+    function removeCategory(id) {
+        var urlPath = '@Url.Action("DeleteCapexUserWiseCategory", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseCategories();
+                }
+            }
+        });
+    }
+
+    function addCategory() {
+
+        var userId = $('#user').val();
+        var categoryId = $('#categoryDD').val();
+
+        if (userId <= 0) {
+            swal({
+                title: "",
+                text: "You must select a valid user.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        }
+
+        var urlPath = '@Url.Action("AddCapexUserWiseCategory", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                UserId: userId,
+                CategoryId: categoryId
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    UserWiseCategories();
+                }
+            }
+        });
+    }
+
+    function categorySelectFunction() {
+        CategoryWiseAssets();
+    }
+
+    function CategoryWiseAssets() {
+
+        var catId = $('#categoryDD2').val();
+
+        var urlPath = '@Url.Action("CategoryWiseAssets", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: catId
+            },
+            success: function (datas) {
+                $('#assetTableBody').empty();
+                var i = 0;
+                datas.forEach(function (data) {
+                    $('#assetTableBody').append(
+                        `<tr><td>` + (++i) + `</td>
+                        <td>`+ data.AssetCatagoryName + `</td>
+                        <td><button onClick="removeAsset(`+ data.AssetCatagoryId + `)" ><i style="color: black" class="fa fa-trash"></i></button></td></tr>`
+                    );
+                });
+            }
+        });
+    }
+
+    function removeAsset(id) {
+        var urlPath = '@Url.Action("DeleteCategoryWiseAsset", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    CategoryWiseAssets();
+                }
+            }
+        });
+    }
+
+    function addAsset() {
+
+        var catId = $('#categoryDD2').val();
+        var assetId = $('#assetDD').val();
+
+        if (catId <= 0) {
+            swal({
+                title: "",
+                text: "You must select a valid category.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        }
+
+        var urlPath = '@Url.Action("AddCategoryWiseAsset", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                CatId: catId,
+                AssId: assetId
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    CategoryWiseAssets();
+                }
+            }
+        });
+    }
+
+    function showApprovers() {
+        var businessUnitId = $('#businessUnitDD2').val();
+        var categoryId = $('#categoryDD3').val();
+
+        var urlPath = '@Url.Action("CapexBusinessUnitCategoryWiseApprovers", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                buId: businessUnitId,
+                catId: categoryId
+            },
+            success: function (datas) {
+                $('#approverTableBody').empty();
+                var i = 0;
+                datas.forEach(function (data) {
+                    $('#approverTableBody').append(
+                        `<tr><td>` + (++i) + `</td>
+                        <td>`+ data.UserName + `</td>
+                        <td>`+ data.DesignationName + `</td>
+                        <td>`+ data.ApproverNo + `</td>
+                        <td><button onClick="removeApprover(`+ data.ApprovalID + `)" ><i style="color: black" class="fa fa-trash"></i></button></td></tr>`
+                    );
+                });
+            }
+        });
+    }
+
+    function addApprover() {
+
+        var businessUnitId = $('#businessUnitDD2').val();
+        var categoryId = $('#categoryDD3').val();
+        var userId = $('#approverDD').val();
+        var appNo = $('#appNoInput').val();
+
+
+        if (businessUnitId <= 0 || categoryId <= 0) {
+            swal({
+                title: "",
+                text: "You must select valid info.",
+                type: "warning",
+                button: "OK"
+            });
+
+            return 0;
+        }
+
+        var urlPath = '@Url.Action("AddCapexBusinessUnitCategoryWiseApprover", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                buId: businessUnitId,
+                catId: categoryId,
+                userId: userId,
+                appNo: appNo,
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    showApprovers();
+                }
+            }
+        });
+    }
+
+    function removeApprover(id) {
+        var urlPath = '@Url.Action("DeleteCapexBusinessUnitCategoryWiseApprover", "Admin")';
+        $.ajax({
+            type: 'POST',
+            url: urlPath,
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function (data) {
+                if (data.IsSuccess) {
+                    showApprovers();
+                }
+            }
+        });
+    }
+
+</script>

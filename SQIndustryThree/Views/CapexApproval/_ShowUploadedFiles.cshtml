@@ -1,0 +1,317 @@
+﻿@model SQIndustryThree.Models.CapexInformationMaster
+@{
+    ViewBag.Title = "_ShowUploadedFiles";
+}
+    <div id="myprintmodal">
+       
+        <h3 style="color:black;text-align:center;font-weight:bold">Capex No: @Model.CapexInfoId </h3>
+        <div>
+            <span style="float:left;font-weight:bold;font-size:24px">@Model.BusinessUnitName</span>
+            <span style="float:right;">
+                @if (Model.Revision > 0)
+                { 
+                   <p style="text-align:center;font-weight:bold">
+                    No. of Revision: @Model.Revision</p>
+                }
+            </span>
+        </div>
+        <br />
+        <div class="row">
+            <table style="text-align:center;table-layout:fixed" width="90%" align="center" border="1">
+                <caption>Approval Status</caption>
+                <thead>
+                    <tr>
+                        <th width="5%">No</th>
+                        <th width="15%">Approver Name</th>
+                        <th width="15%">Designation</th>
+                        <th width="10%">Status</th>
+                        <th width="15%">Date</th>
+                        <th width="40%">Comment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int approver = 1;}
+                    @foreach (var query in Model.ApproverQueryModelList)
+                    {
+                        <tr>
+                            <td>@approver</td>
+                            <td style="word-wrap:break-word">@query.ApproverName</td>
+                            <td style="word-wrap:break-word">@query.DesignationName</td>
+                            @{
+                                if (query.IsApproved == 0)
+                                {
+                                    <td style="color:red">Pending</td>
+                                }
+                                else if (query.IsApproved == 1)
+                                {
+                                    <td style="color:green">Approved</td>
+                                }
+                                else if (query.IsApproved == 2)
+                                {
+                                    <td style="color:red">Rejected</td>
+                                }
+                                else
+                                {
+                                    <td style="color:Red">Not Sent</td>
+                                }
+                            }
+                            <td style="word-wrap:break-word">@query.UpdateDate</td>
+                            @{
+                                <td style="word-wrap:break-word">@query.ReviewComment</td>
+                            }
+                        </tr>
+                        approver++;
+                    }
+                </tbody>
+
+            </table>
+
+            <div>
+                <input id="primarykey" type="hidden" value="@Model.CapexInfoId" />
+                <table style="text-align:center;overflow-wrap:initial" border="1" width="90%" align="center">
+                    <caption>Capex Information</caption>
+                    <tbody>
+                        <tr>
+                            <td width="30%">Capex Name</td>
+                            <td width="70%">@Model.CapexName</td>
+                        </tr>
+                        <tr>
+
+                            <td>Business Unit</td>
+                            <td>@Model.BusinessUnitName</td>
+                        </tr>
+                        <tr>
+                            <td>Capex Asset Type</td>
+                            <td>@Model.CapexAssetType</td>
+                        </tr>
+                        <tr>
+                            <td>Location Name</td>
+                            <td>@Model.LocationName</td>
+                        </tr>
+                        <tr>
+                            <td>Capex Descriptions</td>
+                            <td style="width:100%;overflow-wrap:break-word">@Model.CapexDescription</td>
+                        </tr>
+                        <tr>
+                            <td> Raised BY</td>
+                            <td>@Model.UserName</td>
+                        </tr>
+                        <tr>
+                            <td>Create Date</td>
+                            <td>@Model.CapexCreateDate.ToString("dd-MMM-yyyy HH:mm")</td>
+                        </tr>
+                        <tr>
+                            <td>Catagory Name</td>
+                            <td>@Model.CapexCatagoryName</td>
+                        </tr>
+                    </tbody>
+                </table>
+                @if (Model.CapexInformationDetails != null)
+                {
+                    <table style="text-align:center" width="90%" id="capex_details" border="1" align="center">
+                        <caption>Asset Details Information</caption>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Asset Catagory</th>
+                                <th>Asset Descriptions</th>
+                                <th>Asset quantity</th>
+                                <th>Asset Unit Price</th>
+                                <th>Asset Estimated Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{decimal total = 0; int count = 1;}
+                            @foreach (var item in Model.CapexInformationDetails)
+                            {
+                                total += Convert.ToDecimal(item.CapexEstimatedCost);
+                                <tr>
+                                    <td>@count</td>
+                                    <td>@item.CapexAssetCatagory</td>
+                                    <td>@item.CapexAssetDescription</td>
+                                    <td>@item.CapexDetailsQty</td>
+                                    <td style="overflow-wrap:inherit">@item.CapexUnitPrice.ToString("N")</td>
+                                    <td>@item.CapexEstimatedCost.ToString("N")</td>
+                                    <td style="display:none" id="detailsId_@count" name="detailsId">@item.CapexInfoDetailsId</td>
+                                </tr>
+                                count++;
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Total</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th id="total_price">@Model.Currency @total.ToString("N") </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+            </div>
+        </div>
+
+    </div>
+    <div style="text-align:right;margin:unset;padding:5px;">
+        <button id="show_comments" class="btn btn-success" value="1">Show Comments </button>
+        <button id="hide_comments" style="display:none" class="btn btn-info" value="1">Hide Comments </button>
+        <button id="show_history" class="btn btn-success" value="1">Approval History </button>
+        <button id="hide_history" style="display:none" class="btn btn-info" value="1">Hide </button>
+    </div>
+
+<div id="comments_section" class="container" style="overflow-wrap:inherit; overflow-y: scroll;height:200px;width:90%;border:1px solid" hidden>
+    <p>Comment Section</p>
+    @if (Model.CommentsTables != null)
+    {
+        foreach (var app in Model.CommentsTables)
+        {
+            <hr style="margin:unset;padding:unset;width:50%" />
+            <p style="margin:unset;padding:unset" class="media-heading user_name"><strong style="color:blue">@app.ReviewerByName</strong>To <strong>@app.ReviewerToName</strong></p>
+            <p style="margin:unset;padding:unset">@app.UpdatedBY.ToString("MM/dd/yyyy hh:mm tt")</p>
+            <p style="margin:unset;padding:unset">@app.ReviewMessage</p>
+        }
+    }
+</div>
+<div>
+    @if (Model.CapexFileUpload != null)
+    {
+    <ul>
+        @foreach (var item in Model.CapexFileUpload)
+        {
+            <li>@Html.ActionLink(@item.CapexFileName, "DownloadFile", "CapexApproval", new { filepath = item.CapexFilePath.ToString(), filename = item.CapexFileName.ToString() }, new { @target = "_blank" })</li>
+            // <li><a href="/CapexApproval/DownloadFile?filename=@item.CapexFilePath" target="_blank">@item.CapexFileName</a></li>
+        }
+    </ul>
+    }
+</div>
+@{
+    int userid = Convert.ToInt32(Session["SQuserId"].ToString());
+}
+<br />
+<div class="container" style="overflow-wrap:inherit; width:90%;">
+    <div class="col-md-4">
+        <select id="approvernamereview" class="form-control">
+            <option value="0">--Select person to send --</option>
+            <option value="@Model.UserId">@Model.UserName</option>
+            @foreach (var app in Model.ApproverQueryModelList)
+            {
+                if (app.IsApproved == 3 || app.ApproverUserId == userid)
+                {
+
+                }
+                else
+                {
+                    <option value="@app.ApproverUserId">@app.ApproverName</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-md-6">
+        <input type="text" id="comments_message" class="form-control" placeholder="Enter Review Message" />
+    </div>
+    <div class="col-md-2">
+        <button type="button" class="btn btn-primary" onclick="updateComment()" id="btnreview">Review</button>
+    </div>
+</div>
+<br />
+<div id="logsection" class="container" style="overflow-wrap:inherit; overflow-y: scroll;height:200px;width:90%;" hidden >
+    <p>Approvel History</p>
+    @if (Model.LogSections != null)
+    {
+        <table width="100%" border="1">
+            <thead>
+                <tr>
+                    <th width="20%">Date </th>
+                    <th width="15%">Action By </th>
+                    <th width="15%">Status</th>
+                    <th width="50%">Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var log in Model.LogSections)
+                {
+                <tr>
+                    <td style="word-wrap:break-word">@log.ActionDate</td>
+                    <td style="word-wrap:break-word">@log.ActionBy</td>
+                    <td style="word-wrap:break-word">@log.ActionStatus</td>
+                    <td style="word-wrap:break-word">@log.Comments</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+</div>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+        function ReviewComment(approve) {
+                var urlpath = '@Url.Action("ReviewCapexInfo", "CapexApproval")';
+                $.ajax({
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(approve),
+                    dataType: 'json',
+                    url: urlpath,
+                    type: "Post",
+                    async: true,
+                    success: function (result) {
+                        if (result.isSuccess) {
+                            swal({
+                                            title: 'Comment Added Successfully',
+                                            type: 'success',
+                                            closeOnCancel: true
+                                        },
+                                function () {
+                                    window.location.href = result.msg;
+                                        });
+                        }
+                    }
+                });
+        }
+
+    function updateComment() {
+            var submit = true;
+            var jsonData = {};
+            if ($('#approvernamereview').val() == "0") {
+                $('#approvernamereview').css({ "border-color": "#FF0000" });
+                submit = false;
+            } else if ($('#comments_message').val().length<1) {
+                submit = false;
+            }
+            jsonData["CapexInfoId"] = $('#primarykey').val();
+            jsonData["CapexReview"] = $('#remarks_box').val();
+            jsonData["ReviewerTo"] = $('#approvernamereview').val();
+            jsonData["ReviewMessage"] = $('#comments_message').val();
+            if (submit == true) {
+                ReviewComment(jsonData);
+            } else {
+                swal({
+                    title: 'add comment and data',
+                    type: 'error',
+                    closeOnCancel: true
+                });
+            }
+    }
+
+        $("#show_comments").click(function () {
+            $("#show_comments").hide();
+            $("#hide_comments").show();
+            $("#comments_section").show();
+        });
+        $("#hide_comments").click(function () {
+            $("#show_comments").show();
+            $("#hide_comments").hide();
+            $("#comments_section").hide();
+        });
+
+        $("#show_history").click(function () {
+            $("#show_history").hide();
+            $("#hide_history").show();
+            $("#logsection").show();
+        });
+        $("#hide_history").click(function () {
+            $("#show_history").show();
+            $("#hide_history").hide();
+            $("#logsection").hide();
+        });
+</script>
